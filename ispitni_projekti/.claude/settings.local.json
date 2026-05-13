@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build:*)",
+      "Bash(npx ng build:*)",
+      "Bash(npx tsc:*)",
+      "Bash(dotnet ef migrations add:*)",
+      "Bash(npm install:*)"
+    ]
+  }
+}
