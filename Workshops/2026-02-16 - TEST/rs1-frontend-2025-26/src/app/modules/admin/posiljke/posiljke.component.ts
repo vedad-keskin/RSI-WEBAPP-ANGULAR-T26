@@ -1,4 +1,18 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import {
+  ListOrderShipmentsQueryDto,
+  ListOrderShipmentsRequest
+} from '../../../api-services/order-shipments/order-shipments-api.models';
+import { OrderShipmentsApiService } from '../../../api-services/order-shipments/order-shipments-api.service';
+import { orderShipmentStatusLabel } from '../../../api-services/order-shipments/order-shipment-status.helper';
+import { BaseListPagedComponent } from '../../../core/components/base-classes/base-list-paged-component';
+import { ToasterService } from '../../../core/services/toaster.service';
+import { DialogHelperService } from '../../shared/services/dialog-helper.service';
+import { DialogButton } from '../../shared/models/dialog-config.model';
+import { OrdersApiService } from '../../../api-services/orders/orders-api.service';
+import { ListOrdersQueryDto } from '../../../api-services/orders/orders-api.models';
+import { allItemsPaging } from '../../../core/models/paging/paging-utils';
 
 @Component({
   selector: 'app-posiljke',
@@ -6,17 +20,17 @@ import { Component, inject, OnInit } from '@angular/core';
   templateUrl: './posiljke.component.html',
   styleUrl: './posiljke.component.scss'
 })
-export class PosiljkeComponent implements OnInit {
+export class PosiljkeComponent
+  extends BaseListPagedComponent<ListOrderShipmentsQueryDto, ListOrderShipmentsRequest>
+  implements OnInit
+{
+  private api = inject(OrderShipmentsApiService);
+  private ordersApi = inject(OrdersApiService);
+  private router = inject(Router);
+  private toaster = inject(ToasterService);
+  private dialogHelper = inject(DialogHelperService);
 
-  // hardkodirano - obrisati ovo
-  items = [
-    { id: 1, shipmentNumber: 'SHP-00001', orderReferenceNumber: 'ORD-0001', status: 4, statusNaziv: 'Dostavljena', shippingCost: 12.50, shippedAtUtc: '02.02.2026', deliveredAtUtc: '04.02.2026' },
-    { id: 2, shipmentNumber: 'SHP-00002', orderReferenceNumber: 'ORD-0002', status: 3, statusNaziv: 'U dostavi',   shippingCost: 8.00,  shippedAtUtc: '07.02.2026', deliveredAtUtc: null },
-    { id: 3, shipmentNumber: 'SHP-00003', orderReferenceNumber: 'ORD-0003', status: 1, statusNaziv: 'Kreirana',    shippingCost: 15.00, shippedAtUtc: '12.02.2026', deliveredAtUtc: null },
-    { id: 4, shipmentNumber: 'SHP-00004', orderReferenceNumber: 'ORD-0004', status: 2, statusNaziv: 'U skladištu', shippingCost: 10.00, shippedAtUtc: '15.02.2026', deliveredAtUtc: null },
-    { id: 5, shipmentNumber: 'SHP-00005', orderReferenceNumber: 'ORD-0005', status: 5, statusNaziv: 'Otkazana',    shippingCost: 9.50,  shippedAtUtc: '10.02.2026', deliveredAtUtc: null },
-    { id: 6, shipmentNumber: 'SHP-00006', orderReferenceNumber: 'ORD-0001', status: 4, statusNaziv: 'Dostavljena', shippingCost: 20.00, shippedAtUtc: '03.02.2026', deliveredAtUtc: '05.02.2026' },
-  ];
+  orders: ListOrdersQueryDto[] = [];
 
   displayedColumns: string[] = [
     'shipmentNumber',
@@ -28,9 +42,77 @@ export class PosiljkeComponent implements OnInit {
     'actions'
   ];
 
+  constructor() {
+    super();
+    this.request = new ListOrderShipmentsRequest();
+    this.request.paging.pageSize = 10;
+  }
+
   ngOnInit(): void {
+    this.loadOrdersForFilter();
+    this.initList();
+  }
+
+  statusLabel = orderShipmentStatusLabel;
+
+  private loadOrdersForFilter(): void {
+    this.ordersApi.list({ paging: allItemsPaging }).subscribe({
+      next: (res) => {
+        this.orders = res.items;
+      },
+      error: () => {
+        this.toaster.error('Ne mogu učitati narudžbe za filter.');
+      }
+    });
+  }
+
+  protected loadPagedData(): void {
+    this.startLoading();
+    this.api.list(this.request).subscribe({
+      next: (response) => {
+        this.handlePageResult(response);
+        this.stopLoading();
+      },
+      error: () => {
+        this.stopLoading('Greška pri učitavanju pošiljki');
+        this.toaster.error('Greška pri učitavanju pošiljki.');
+      }
+    });
+  }
+
+  onOrderFilterChange(): void {
+    this.request.paging.page = 1;
+    this.loadPagedData();
   }
 
   onCreate(): void {
+    this.router.navigate(['/admin/posiljke/add']);
+  }
+
+  onEdit(row: ListOrderShipmentsQueryDto): void {
+    this.router.navigate(['/admin/posiljke', row.id, 'edit']);
+  }
+
+  onDelete(row: ListOrderShipmentsQueryDto): void {
+    this.dialogHelper.confirmDelete(row.shipmentNumber).subscribe((result) => {
+      if (result && result.button === DialogButton.DELETE) {
+        this.performDelete(row);
+      }
+    });
+  }
+
+  private performDelete(row: ListOrderShipmentsQueryDto): void {
+    this.startLoading();
+    this.api.delete(row.id).subscribe({
+      next: () => {
+        this.stopLoading();
+        this.toaster.success('Pošiljka obrisana.');
+        this.loadPagedData();
+      },
+      error: () => {
+        this.stopLoading();
+        this.toaster.error('Brisanje nije uspjelo.');
+      }
+    });
   }
 }
