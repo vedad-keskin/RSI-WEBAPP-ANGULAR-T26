@@ -8,8 +8,8 @@ public sealed class ListOrderShipmentsQueryHandler(IAppDbContext ctx)
     {
         var q = ctx.OrderShipments.AsNoTracking();
 
-        if (request.OrderId is int oid && oid > 0)
-            q = q.Where(x => x.OrderId == oid);
+        if (request.OrderId is not null)
+            q = q.Where(x => x.OrderId == request.OrderId);
 
         var projected = q
             .OrderBy(x => x.ShipmentNumber)
