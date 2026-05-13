@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Modules\Sales\OrdersShipment\Commands\" />
     <Folder Include="Modules\Uplate\" />
   </ItemGroup>
 
