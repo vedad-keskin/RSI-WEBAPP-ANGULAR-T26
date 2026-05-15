@@ -1,11 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import {BaseListPagedComponent} from '../../../core/components/base-classes/base-list-paged-component';
-import {ListOrdersQueryDto, ListOrdersRequest} from '../../../api-services/orders/orders-api.models';
 import {
   ListOrderShipmentsDto,
   ListOrderShipmentsRequest, OrderShipmentStatusType
 } from '../../../api-services/order-shipments/order-shipments-api.models';
-import {OrdersApiService} from '../../../api-services/orders/orders-api.service';
 import {MatDialog} from '@angular/material/dialog';
 import {ToasterService} from '../../../core/services/toaster.service';
 import {Router} from '@angular/router';
