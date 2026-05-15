@@ -23,6 +23,9 @@ export class PosiljkeComponent
   extends BaseListPagedComponent<ListOrderShipmentsDto, ListOrderShipmentsRequest>
   implements OnInit {
 
+  protected readonly OrderShipmentsStatusHelper = OrderShipmentsStatusHelper;
+
+
   private api = inject(OrdersShipmentApiService);
   private dialog = inject(MatDialog);
   private toaster = inject(ToasterService);
@@ -80,5 +83,4 @@ export class PosiljkeComponent
   onCreate(): void {
   }
 
-  protected readonly OrderShipmentsStatusHelper = OrderShipmentsStatusHelper;
 }
