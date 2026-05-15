@@ -11,7 +11,7 @@ namespace Market.API.Controllers;
 [ApiController]
 [Route("[controller]")]
 //[Authorize(Policy = "Staff")]
-public class OrdersShipmentController(ISender sender) : ControllerBase
+public class OrderShipmentsController(ISender sender) : ControllerBase
 {
     //[HttpPost]
     //// Fallback policy already requires authenticated user
