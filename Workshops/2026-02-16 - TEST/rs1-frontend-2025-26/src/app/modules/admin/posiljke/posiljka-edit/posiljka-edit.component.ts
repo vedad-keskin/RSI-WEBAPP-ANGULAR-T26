@@ -9,7 +9,6 @@ import {
   OrderShipmentStatusType,
   UpdateOrderShipmentCommand
 } from '../../../../api-services/order-shipments/order-shipments-api.models';
-import { orderShipmentStatusOptions } from '../../../../api-services/order-shipments/order-shipment-status.helper';
 import { OrdersApiService } from '../../../../api-services/orders/orders-api.service';
 import { ListOrdersQueryDto } from '../../../../api-services/orders/orders-api.models';
 import { allItemsPaging } from '../../../../core/models/paging/paging-utils';
@@ -30,7 +29,6 @@ export class PosiljkaEditComponent extends BaseFormComponent<void> implements On
 
   shipmentId!: number;
   orders: ListOrdersQueryDto[] = [];
-  statusOptions = orderShipmentStatusOptions;
 
   ngOnInit(): void {
     this.shipmentId = +this.route.snapshot.params['id'];

@@ -5,7 +5,6 @@ import {
   ListOrderShipmentsRequest
 } from '../../../api-services/order-shipments/order-shipments-api.models';
 import { OrderShipmentsApiService } from '../../../api-services/order-shipments/order-shipments-api.service';
-import { orderShipmentStatusLabel } from '../../../api-services/order-shipments/order-shipment-status.helper';
 import { BaseListPagedComponent } from '../../../core/components/base-classes/base-list-paged-component';
 import { ToasterService } from '../../../core/services/toaster.service';
 import { DialogHelperService } from '../../shared/services/dialog-helper.service';
@@ -53,7 +52,6 @@ export class PosiljkeComponent
     this.initList();
   }
 
-  statusLabel = orderShipmentStatusLabel;
 
   private loadOrdersForFilter(): void {
     this.ordersApi.list({ paging: allItemsPaging }).subscribe({

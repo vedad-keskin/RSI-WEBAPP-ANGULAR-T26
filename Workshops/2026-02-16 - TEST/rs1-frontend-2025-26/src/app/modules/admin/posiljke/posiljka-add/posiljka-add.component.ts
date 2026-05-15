@@ -8,7 +8,6 @@ import {
   CreateOrderShipmentCommand,
   OrderShipmentStatusType
 } from '../../../../api-services/order-shipments/order-shipments-api.models';
-import { orderShipmentStatusOptions } from '../../../../api-services/order-shipments/order-shipment-status.helper';
 import { OrdersApiService } from '../../../../api-services/orders/orders-api.service';
 import { ListOrdersQueryDto } from '../../../../api-services/orders/orders-api.models';
 import { allItemsPaging } from '../../../../core/models/paging/paging-utils';
@@ -27,7 +26,6 @@ export class PosiljkaAddComponent extends BaseFormComponent<void> implements OnI
   private toaster = inject(ToasterService);
 
   orders: ListOrdersQueryDto[] = [];
-  statusOptions = orderShipmentStatusOptions;
 
   ngOnInit(): void {
     this.initForm(false);
