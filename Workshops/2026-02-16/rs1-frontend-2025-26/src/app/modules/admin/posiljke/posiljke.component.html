@@ -10,6 +10,28 @@
       </div>
 
       <div class="actions-container">
+
+
+        <mat-form-field class="filter-field" appearance="fill">
+          <mat-label>Filtriraj po narudzbi</mat-label>
+          <mat-select [(ngModel)]="orderFilter" (selectionChange)="onFilterChange($event.value)">
+            <mat-option [value]="null">Sve narudzbe</mat-option>
+            <mat-option *ngFor="let option of ordersOptions" [value]="option.id">
+              <div class="status-option">
+                <mat-icon>{{ option.icon }}</mat-icon>
+                <span>{{ option.referenceNumber  }}</span>
+              </div>
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix>filter_list</mat-icon>
+        </mat-form-field>
+
+
+
+
+
+
+
         <button mat-raised-button color="primary" (click)="onCreate()">
           <mat-icon>add</mat-icon>
           Nova pošiljka
