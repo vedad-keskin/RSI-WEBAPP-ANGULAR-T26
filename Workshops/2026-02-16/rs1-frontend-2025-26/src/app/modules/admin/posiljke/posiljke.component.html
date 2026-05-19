@@ -10,6 +10,18 @@
       </div>
 
       <div class="actions-container">
+        <!-- Order Filter (copy from admin-orders status filter) -->
+        <mat-form-field class="filter-field" appearance="fill">
+          <mat-label>Narudžba</mat-label>
+          <mat-select [(ngModel)]="orderFilter" (selectionChange)="onOrderFilterChange($event.value)">
+            <mat-option [value]="null">Sve narudžbe</mat-option>
+            <mat-option *ngFor="let narudzba of narudzbe" [value]="narudzba.id">
+              {{ narudzba.referenceNumber }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix>filter_list</mat-icon>
+        </mat-form-field>
+
         <button mat-raised-button color="primary" (click)="onCreate()">
           <mat-icon>add</mat-icon>
           Nova pošiljka
@@ -99,7 +111,7 @@
       <tr class="mat-row" *matNoDataRow>
         <td class="mat-cell" colspan="7">
           Nema pošiljki
-        </td>.
+        </td>
       </tr>
     </table>
 

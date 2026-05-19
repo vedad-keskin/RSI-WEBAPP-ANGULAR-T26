@@ -1,19 +1,16 @@
 import { Component, inject, OnInit } from '@angular/core';
 import {BaseListPagedComponent} from '../../../core/components/base-classes/base-list-paged-component';
 import {
-  ListProductCategoriesQueryDto,
-  ListProductCategoriesRequest
-} from '../../../api-services/product-categories/product-categories-api.model';
-import {
   ListOrderShipmentsQueryDto,
   ListOrderShipmentsRequest
 } from '../../../api-services/order-shipments/order-shipments-api.model';
-import {ProductCategoriesApiService} from '../../../api-services/product-categories/product-categories-api.service';
 import {MatDialog} from '@angular/material/dialog';
 import {ToasterService} from '../../../core/services/toaster.service';
 import {DialogHelperService} from '../../shared/services/dialog-helper.service';
 import {OrderShipmentsApiService} from '../../../api-services/order-shipments/order-shipments-api.service';
 import {OrderShipmentStatusHelper} from '../../../api-services/order-shipments/order-shipments-status.helper';
+import {ListOrdersQueryDto, ListOrdersRequest} from '../../../api-services/orders/orders-api.models';
+import {OrdersApiService} from '../../../api-services/orders/orders-api.service';
 
 @Component({
   selector: 'app-posiljke',
@@ -27,29 +24,39 @@ export class PosiljkeComponent
 
   protected readonly OrderShipmentStatusHelper = OrderShipmentStatusHelper;
 
-
   private api = inject(OrderShipmentsApiService);
+  private ordersApi = inject(OrdersApiService);
   private dialog = inject(MatDialog);
   private toaster = inject(ToasterService);
   private dialogHelper = inject(DialogHelperService);
+
+  // Order filter (null = sve narudžbe)
+  orderFilter: number | null = null;
+  narudzbe: ListOrdersQueryDto[] = [];
 
   constructor() {
     super();
     this.request = new ListOrderShipmentsRequest();
   }
 
-  // hardkodirano - obrisati ovo
-  // items = [
-  //   // { id: 1, shipmentNumber: 'SHP-00001', orderReferenceNumber: 'ORD-0001', status: 4, statusNaziv: 'Dostavljena', shippingCost: 12.50, shippedAtUtc: '02.02.2026', deliveredAtUtc: '04.02.2026' },
-  //   // { id: 2, shipmentNumber: 'SHP-00002', orderReferenceNumber: 'ORD-0002', status: 3, statusNaziv: 'U dostavi',   shippingCost: 8.00,  shippedAtUtc: '07.02.2026', deliveredAtUtc: null },
-  //   // { id: 3, shipmentNumber: 'SHP-00003', orderReferenceNumber: 'ORD-0003', status: 1, statusNaziv: 'Kreirana',    shippingCost: 15.00, shippedAtUtc: '12.02.2026', deliveredAtUtc: null },
-  //   // { id: 4, shipmentNumber: 'SHP-00004', orderReferenceNumber: 'ORD-0004', status: 2, statusNaziv: 'U skladištu', shippingCost: 10.00, shippedAtUtc: '15.02.2026', deliveredAtUtc: null },
-  //   // { id: 5, shipmentNumber: 'SHP-00005', orderReferenceNumber: 'ORD-0005', status: 5, statusNaziv: 'Otkazana',    shippingCost: 9.50,  shippedAtUtc: '10.02.2026', deliveredAtUtc: null },
-  //   // { id: 6, shipmentNumber: 'SHP-00006', orderReferenceNumber: 'ORD-0001', status: 4, statusNaziv: 'Dostavljena', shippingCost: 20.00, shippedAtUtc: '03.02.2026', deliveredAtUtc: '05.02.2026' },
-  // ];
-
   ngOnInit(): void {
+    this.loadOrdersForFilter();
     this.initList();
+  }
+
+  private loadOrdersForFilter(): void {
+    const ordersRequest = new ListOrdersRequest();
+    ordersRequest.paging.page = 1;
+    ordersRequest.paging.pageSize = 500;
+
+    this.ordersApi.list(ordersRequest).subscribe({
+      next: (response) => {
+        this.narudzbe = response.items;
+      },
+      error: (err) => {
+        console.error('Load orders for filter error:', err);
+      },
+    });
   }
 
   protected override loadPagedData(): void {
@@ -67,6 +74,15 @@ export class PosiljkeComponent
       },
     });
 
+  }
+
+  // === Filters ===
+
+  onOrderFilterChange(orderId: number | null): void {
+    this.orderFilter = orderId;
+    this.request.orderId = orderId;
+    this.request.paging.page = 1;
+    this.loadPagedData();
   }
 
   displayedColumns: string[] = [
