@@ -30,20 +30,20 @@ export class PosiljkeComponent
 
 
   private api = inject(OrderShipmentsApiService);
-  private orderApi = inject(OrdersApiService);
+  private ordersApi = inject(OrdersApiService);
+
 
   private dialog = inject(MatDialog);
   private toaster = inject(ToasterService);
   private dialogHelper = inject(DialogHelperService);
 
-  ordersOptions:any;
-  orderFilter : number | null = null;
+  orderOptions:any;
+  orderFilter: number | null = null;
 
   constructor() {
     super();
     this.request = new ListOrderShipmentsRequest();
   }
-
 
 
   ngOnInit(): void {
@@ -53,22 +53,31 @@ export class PosiljkeComponent
 
   private loadOrdersForFiltering() {
 
+    this.startLoading();
 
-
-    this.orderApi.list().subscribe({
+    this.ordersApi.list().subscribe({
       next: (response) => {
 
+        this.orderOptions = response.items;
 
-        this.ordersOptions = response.items;
-
+        this.stopLoading();
       },
       error: (err) => {
-        this.stopLoading('Failed to load orders');
-        console.error('Load orders error:', err);
+        this.stopLoading('Failed to load order shipments');
+        console.error('Load order shipments error:', err);
       },
     });
 
   }
+
+  onOrderFilterChange(orderId: any) {
+
+    this.orderFilter = orderId;
+    this.request.orderId = orderId;
+    this.paging.page = 1;
+    this.loadPagedData();
+  }
+
 
   protected override loadPagedData(): void {
 
@@ -101,11 +110,5 @@ export class PosiljkeComponent
   }
 
 
-  onFilterChange(orderId: any) {
 
-    // this.orderFilter = orderId;
-    this.request.paging.page = 1;
-    this.request.orderId = orderId;
-    this.loadPagedData()
-  }
 }
