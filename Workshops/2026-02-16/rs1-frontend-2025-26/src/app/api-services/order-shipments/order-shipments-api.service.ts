@@ -55,9 +55,9 @@ export class OrderShipmentsApiService {
   //  * DELETE /ProductCategories/{id}
   //  * Delete a category.
   //  */
-  // delete(id: number): Observable<void> {
-  //   return this.http.delete<void>(`${this.baseUrl}/${id}`);
-  // }
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
   //
   // /**
   //  * PUT /ProductCategories/{id}/disable

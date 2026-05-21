@@ -1,9 +1,11 @@
+using Market.Application.Modules.Catalog.Products.Commands.Delete;
 using Market.Application.Modules.Sales.Orders.Commands.Create;
 using Market.Application.Modules.Sales.Orders.Commands.Status;
 using Market.Application.Modules.Sales.Orders.Commands.Update;
 using Market.Application.Modules.Sales.Orders.Queries.GetById;
 using Market.Application.Modules.Sales.Orders.Queries.List;
 using Market.Application.Modules.Sales.Orders.Queries.ListWithItems;
+using Market.Application.Modules.Sales.OrderShipments.Commands.Delete;
 using Market.Application.Modules.Sales.OrdersShipment.Queries.List;
 
 namespace Market.API.Controllers;
@@ -37,6 +39,13 @@ public class OrderShipmentsController(ISender sender) : ControllerBase
     //    var dto = await sender.Send(new GetOrderByIdQuery { Id = id }, ct);
     //    return dto; // if NotFoundException -> 404 via middleware
     //}
+
+    [HttpDelete("{id:int}")]
+    public async Task Delete(int id, CancellationToken ct)
+    {
+        await sender.Send(new DeleteOrderShipmentCommand { Id = id }, ct);
+        // no return -> 204 No Content
+    }
 
     [HttpGet]
     public async Task<PageResult<ListOrderShipmentsQueryDto>> List([FromQuery] ListOrderShipmentsQuery query, CancellationToken ct)
