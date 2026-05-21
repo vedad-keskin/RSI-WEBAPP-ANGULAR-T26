@@ -15,6 +15,7 @@ import {DialogHelperService} from '../../shared/services/dialog-helper.service';
 import {OrderShipmentsApiService} from '../../../api-services/order-shipments/order-shipments-api.service';
 import {OrderShipmentStatusHelper} from '../../../api-services/order-shipments/order-shipments-status.helper';
 import {OrdersApiService} from '../../../api-services/orders/orders-api.service';
+import {DialogButton} from '../../shared/models/dialog-config.model';
 
 @Component({
   selector: 'app-posiljke',
@@ -109,6 +110,81 @@ export class PosiljkeComponent
   onCreate(): void {
   }
 
+
+  onDelete(orderShipment:ListOrderShipmentsQueryDto): void {
+
+    this.dialogHelper.orderShipment.confirmDelete(orderShipment.shipmentNumber).subscribe(result => {
+      if (result && result.button === DialogButton.DELETE) {
+        this.performDelete(orderShipment);
+      }
+    });
+
+  }
+
+  private performDelete(orderShipment: ListOrderShipmentsQueryDto) {
+
+    this.startLoading();
+
+    this.api.delete(orderShipment.id).subscribe({
+      next: () => {
+        this.dialogHelper.orderShipment.showDeleteSuccess().subscribe();
+        this.loadPagedData();
+        this.toaster.success(`Order Shipment ${orderShipment.shipmentNumber} successfully deleted`);
+
+
+      },
+      error: (err) => {
+        this.stopLoading();
+
+        const errorMessage = this.extractErrorMessage(err);
+
+        // Show error dialog instead of toast
+        this.dialogHelper.showError(
+          'Neuspjeh',
+          'Pošiljka nije uspješno obrisana'
+        ).subscribe();
+
+        this.toaster.error(`Order Shipment ${orderShipment.shipmentNumber} unsuccessfully deleted`);
+
+
+        console.error('Delete order shipment error:', err);
+      },
+    });
+  }
+
+
+  private extractErrorMessage(err: any): string | null {
+    if (err?.error) {
+      if (typeof err.error === 'string') {
+        return err.error;
+      }
+
+      if (err.error.message) {
+        return err.error.message;
+      }
+
+      if (err.error.title) {
+        return err.error.title;
+      }
+
+      if (err.error.errors && typeof err.error.errors === 'object') {
+        const errors = Object.values(err.error.errors).flat();
+        if (errors.length > 0) {
+          return errors.join(', ');
+        }
+      }
+    }
+
+    if (err?.message) {
+      return err.message;
+    }
+
+    if (err?.statusText && err.statusText !== 'Unknown Error') {
+      return err.statusText;
+    }
+
+    return null;
+  }
 
 
 }

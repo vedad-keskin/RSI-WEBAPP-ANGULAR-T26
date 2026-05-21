@@ -26,6 +26,10 @@ export class OrderShipmentsApiService {
     });
   }
 
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
   /**
    * GET /ProductCategories/{id}
    * Get a single category by ID.

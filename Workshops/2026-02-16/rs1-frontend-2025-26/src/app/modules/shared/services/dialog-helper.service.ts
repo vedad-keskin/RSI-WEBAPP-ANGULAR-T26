@@ -230,6 +230,58 @@ export class DialogHelperService {
     }
   };
 
+
+  orderShipment = {
+    confirmDelete: (shipmentNumber: string) => {
+      return this.confirmDelete(
+        shipmentNumber,
+        `Da li ste sigurni da želite izbrisati pošiljku ${shipmentNumber} ?`,
+      );
+    },
+
+    // showCreateSuccess: () => {
+    //   return this.showSuccess(
+    //     'DIALOGS.TITLES.SUCCESS',
+    //     'PRODUCT_CATEGORIES.DIALOGS.SUCCESS_CREATE'
+    //   );
+    // },
+    //
+    // showUpdateSuccess: () => {
+    //   return this.showSuccess(
+    //     'DIALOGS.TITLES.SUCCESS',
+    //     'PRODUCT_CATEGORIES.DIALOGS.SUCCESS_UPDATE'
+    //   );
+    // },
+    //
+    showDeleteSuccess: () => {
+      return this.showSuccess(
+        'Uspjeh',
+        'Pošiljka je uspješno obrisana'
+      );
+    },
+    //
+    // showCreateError: () => {
+    //   return this.showError(
+    //     'DIALOGS.TITLES.ERROR',
+    //     'PRODUCT_CATEGORIES.DIALOGS.ERROR_CREATE'
+    //   );
+    // },
+    //
+    // showUpdateError: () => {
+    //   return this.showError(
+    //     'DIALOGS.TITLES.ERROR',
+    //     'PRODUCT_CATEGORIES.DIALOGS.ERROR_UPDATE'
+    //   );
+    // },
+    //
+    // showDeleteError: () => {
+    //   return this.showError(
+    //     'DIALOGS.TITLES.ERROR',
+    //     'PRODUCT_CATEGORIES.DIALOGS.ERROR_DELETE'
+    //   );
+    // }
+  };
+
   /**
    * Product specific dialogs
    */
