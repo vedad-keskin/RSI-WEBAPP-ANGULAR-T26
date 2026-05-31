@@ -1,1 +1,90 @@
-<p>posiljka-add works!</p>
+<div class="container">
+  <!-- Header -->
+  <div class="header-card mat-elevation-z2">
+    <h1>Add Order Shipment</h1>
+  </div>
+
+  <!-- Form Card -->
+  <div class="form-card mat-elevation-z2">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="error-banner">
+        <mat-icon>error</mat-icon>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <!-- Loading Indicator -->
+      <div *ngIf="isLoading" class="loading-overlay">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Saving</p>
+      </div>
+
+<!--       Product Name -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Shipping Number</mat-label>
+        <input
+          matInput
+          formControlName="shipmentNumber"
+          [placeholder]="'Shipping Number' "
+        />
+        <mat-icon matSuffix>inventory_2</mat-icon>
+        <mat-error *ngIf="hasError('shipmentNumber')">
+          {{ getErrorMessage('shipmentNumber') }}
+        </mat-error>
+      </mat-form-field>
+
+
+<!--       Price and Category Row -->
+      <div class="form-row">
+        <!-- Price -->
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>{{ 'Shipping cost' }}</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="shippingCost"
+            step="0.01"
+            [placeholder]="'Shipping cost'"
+          />
+          <span matTextPrefix>KM&nbsp;</span>
+          <mat-icon matSuffix>payments</mat-icon>
+          <mat-error *ngIf="hasError('shippingCost')">
+            {{ getErrorMessage('shippingCost') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Order</mat-label>
+          <mat-select formControlName="orderId">
+            <mat-option *ngFor="let order of orderOptions" [value]="order.id">
+              {{ order.referenceNumber }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix>shopping_cart</mat-icon>
+          <mat-error *ngIf="hasError('orderId')">
+            {{ getErrorMessage('orderId') }}
+          </mat-error>
+        </mat-form-field>
+
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button type="button" mat-stroked-button (click)="onCancel()" [disabled]="isLoading">
+          <mat-icon>close</mat-icon>
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          mat-raised-button
+          color="primary"
+          [disabled]="form.invalid || isLoading"
+        >
+          <mat-icon>save</mat-icon>
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
