@@ -17,12 +17,6 @@ public sealed class CreateOrderShipmentCommandValidator : AbstractValidator<Crea
         RuleFor(x => x.ShippingCost)
             .GreaterThanOrEqualTo(0).WithMessage("Shipping cost cannot be negative.");
 
-        RuleFor(x => x.Status)
-            .IsInEnum().WithMessage("Invalid status.");
 
-        RuleFor(x => x.DeliveredAtUtc)
-            .GreaterThanOrEqualTo(x => x.ShippedAtUtc)
-            .When(x => x.DeliveredAtUtc.HasValue)
-            .WithMessage("Delivered date cannot be before shipped date.");
     }
 }
