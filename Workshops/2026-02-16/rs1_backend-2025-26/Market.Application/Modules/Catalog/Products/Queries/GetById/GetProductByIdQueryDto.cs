@@ -10,4 +10,6 @@ public class GetProductByIdQueryDto
     public required string CategoryName { get; set; } //<-- treba poboljsati
     public required int CategoryId { get; set; } //<-- treba poboljsati
     public required bool IsEnabled { get; init; }
+
+
 }

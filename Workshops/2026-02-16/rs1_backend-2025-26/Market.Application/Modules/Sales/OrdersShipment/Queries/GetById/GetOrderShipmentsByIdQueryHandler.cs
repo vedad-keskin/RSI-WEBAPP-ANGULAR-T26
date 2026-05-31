@@ -17,6 +17,7 @@ public class GetOrderShipmentsByIdQueryHandler(IAppDbContext context) : IRequest
                 Status = x.Status,  
                 DeliveredAtUtc = x.DeliveredAtUtc,
                 ReferenceNumber = x.Order!.ReferenceNumber,
+                OrderId = x.OrderId
             })
             .FirstOrDefaultAsync(cancellationToken);
 
