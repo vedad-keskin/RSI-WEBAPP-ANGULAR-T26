@@ -105,7 +105,12 @@
 
         <td mat-cell *matCellDef="let orderShipment">
 
-          <button mat-icon-button color="primary" matTooltip="Uredi">
+          <button mat-icon-button
+                  color="primary"
+                  matTooltip="Uredi"
+                  (click)="onEdit(orderShipment)"
+          >
+
             <mat-icon>edit</mat-icon>
           </button>
 

@@ -1,7 +1,7 @@
-using Market.Application.Modules.Catalog.ProductCategories.Queries.GetById;
+using Market.Application.Modules.Sales.OrdersShipment.Queries.GetById;
 using Market.Application.Modules.Sales.OrdersShipment.Commands.Create;
 using Market.Application.Modules.Sales.OrdersShipment.Commands.Delete;
-using Market.Application.Modules.Sales.OrdersShipment.Queries.GetById;
+using Market.Application.Modules.Sales.OrdersShipment.Commands.Update;
 using Market.Application.Modules.Sales.OrdersShipment.Queries.List;
 
 namespace Market.API.Controllers;
@@ -20,14 +20,14 @@ public class OrderShipmentsController(ISender sender) : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
     }
 
-    //[HttpPut("{id:int}")]
-    //public async Task Update(int id, UpdateOrderCommand command, CancellationToken ct)
-    //{
-    //    // ID from the route takes precedence
-    //    command.Id = id;
-    //    await sender.Send(command, ct);
-    //    // no return -> 204 No Content
-    //}
+    [HttpPut("{id:int}")]
+    public async Task Update(int id, UpdateOrderShipmentsCommand command, CancellationToken ct)
+    {
+        // ID from the route takes precedence
+        command.Id = id;
+        await sender.Send(command, ct);
+        // no return -> 204 No Content
+    }
 
     [HttpGet("{id:int}")]
     public async Task<GetOrderShipmentsByIdQueryDto> GetById(int id, CancellationToken ct)

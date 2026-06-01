@@ -194,4 +194,9 @@ export class PosiljkeComponent
   }
 
 
+  onEdit(orderShipment:ListOrderShipmentsQueryDto) {
+
+    this.router.navigate(['/admin/posiljke', orderShipment.id, 'edit']);
+
+  }
 }

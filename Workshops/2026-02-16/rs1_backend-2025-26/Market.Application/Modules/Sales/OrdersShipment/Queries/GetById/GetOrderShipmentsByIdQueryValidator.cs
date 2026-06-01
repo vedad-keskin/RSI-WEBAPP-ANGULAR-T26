@@ -1,5 +1,4 @@
-﻿using Market.Application.Modules.Catalog.ProductCategories.Queries.GetById;
-using Market.Application.Modules.Sales.OrdersShipment.Queries.GetById;
+﻿using Market.Application.Modules.Sales.OrdersShipment.Queries.GetById;
 
 public sealed class GetOrderShipmentsByIdQueryValidator : AbstractValidator<GetOrderShipmentsByIdQuery>
 {

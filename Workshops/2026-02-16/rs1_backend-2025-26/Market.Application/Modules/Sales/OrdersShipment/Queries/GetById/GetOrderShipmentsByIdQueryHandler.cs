@@ -1,6 +1,4 @@
-﻿using Market.Application.Modules.Catalog.ProductCategories.Queries.GetById;
-
-namespace Market.Application.Modules.Sales.OrdersShipment.Queries.GetById;
+﻿namespace Market.Application.Modules.Sales.OrdersShipment.Queries.GetById;
 
 public class GetOrderShipmentsByIdQueryHandler(IAppDbContext context) : IRequestHandler<GetOrderShipmentsByIdQuery, GetOrderShipmentsByIdQueryDto>
 {

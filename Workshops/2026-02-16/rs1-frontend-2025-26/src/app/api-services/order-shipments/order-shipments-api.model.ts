@@ -74,7 +74,9 @@ export interface CreateOrderShipmentsCommand {
 //  * Command for PUT /ProductCategories/{id}
 //  * Corresponds to: UpdateProductCategoryCommand.cs
 //  */
-// export interface UpdateProductCategoryCommand {
-//   name: string;
-//   isEnabled: boolean;
-// }
+export interface UpdateOrderShipmentsCommand {
+  shipmentNumber: string;
+  orderId: number;
+  shippingCost: number;
+  status: OrderShipmentStatusType;
+}
