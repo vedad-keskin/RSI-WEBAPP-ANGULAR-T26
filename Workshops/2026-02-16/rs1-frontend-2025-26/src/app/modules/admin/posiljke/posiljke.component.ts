@@ -9,10 +9,9 @@ import {ToasterService} from '../../../core/services/toaster.service';
 import {DialogHelperService} from '../../shared/services/dialog-helper.service';
 import {OrderShipmentsApiService} from '../../../api-services/order-shipments/order-shipments-api.service';
 import {OrderShipmentStatusHelper} from '../../../api-services/order-shipments/order-shipments-status.helper';
-import {ListOrdersQueryDto, ListOrdersRequest} from '../../../api-services/orders/orders-api.models';
 import {OrdersApiService} from '../../../api-services/orders/orders-api.service';
 import {DialogButton} from '../../shared/models/dialog-config.model';
-import {ListProductCategoriesQueryDto} from '../../../api-services/product-categories/product-categories-api.model';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-posiljke',
@@ -28,9 +27,16 @@ export class PosiljkeComponent
 
   private api = inject(OrderShipmentsApiService);
   private ordersApi = inject(OrdersApiService);
+
+
   private dialog = inject(MatDialog);
   private toaster = inject(ToasterService);
   private dialogHelper = inject(DialogHelperService);
+  private router = inject(Router);
+
+
+  orderOptions:any;
+  orderFilter: number | null = null;
 
   // Order filter (null = sve narudžbe)
   orderFilter: number | null = null;
@@ -41,25 +47,39 @@ export class PosiljkeComponent
     this.request = new ListOrderShipmentsRequest();
   }
 
+
   ngOnInit(): void {
-    this.loadOrdersForFilter();
+    this.loadOrdersForFiltering();
     this.initList();
   }
 
-  private loadOrdersForFilter(): void {
-    const ordersRequest = new ListOrdersRequest();
-    ordersRequest.paging.page = 1;
-    ordersRequest.paging.pageSize = 500;
+  private loadOrdersForFiltering() {
 
-    this.ordersApi.list(ordersRequest).subscribe({
+    this.startLoading();
+
+    this.ordersApi.list().subscribe({
       next: (response) => {
-        this.narudzbe = response.items;
+
+        this.orderOptions = response.items;
+
+        this.stopLoading();
       },
       error: (err) => {
-        console.error('Load orders for filter error:', err);
+        this.stopLoading('Failed to load order shipments');
+        console.error('Load order shipments error:', err);
       },
     });
+
   }
+
+  onOrderFilterChange(orderId: any) {
+
+    this.orderFilter = orderId;
+    this.request.orderId = orderId;
+    this.paging.page = 1;
+    this.loadPagedData();
+  }
+
 
   protected override loadPagedData(): void {
 
@@ -98,26 +118,33 @@ export class PosiljkeComponent
   ];
 
   onCreate(): void {
+
+    this.router.navigate(['/admin/posiljke/add']);
+
+
   }
 
-  onDelete(item: ListOrderShipmentsQueryDto) {
-    this.dialogHelper.productCategory.confirmDelete(item.referenceNumber).subscribe(result => {
+
+  onDelete(orderShipment:ListOrderShipmentsQueryDto): void {
+
+    this.dialogHelper.orderShipment.confirmDelete(orderShipment.shipmentNumber).subscribe(result => {
       if (result && result.button === DialogButton.DELETE) {
-        this.performDelete(item);
+        this.performDelete(orderShipment);
       }
     });
+
   }
 
+  private performDelete(orderShipment: ListOrderShipmentsQueryDto) {
 
-  private performDelete(item: ListOrderShipmentsQueryDto): void {
     this.startLoading();
 
-    this.api.delete(item.id).subscribe({
+    this.api.delete(orderShipment.id).subscribe({
       next: () => {
-        this.dialogHelper.productCategory.showDeleteSuccess().subscribe();
+        this.dialogHelper.orderShipment.showDeleteSuccess().subscribe();
         this.loadPagedData();
+        this.toaster.success(`Order Shipment ${orderShipment.shipmentNumber} successfully deleted`);
 
-        this.toaster.error('Order successfully deleted');
 
       },
       error: (err) => {
@@ -127,17 +154,18 @@ export class PosiljkeComponent
 
         // Show error dialog instead of toast
         this.dialogHelper.showError(
-          'Error',
-          'Order shipment could not be deleted',
+          'Neuspjeh',
+          'Pošiljka nije uspješno obrisana'
         ).subscribe();
 
-        this.toaster.error('Order shipment could not be deleted');
+        this.toaster.error(`Order Shipment ${orderShipment.shipmentNumber} unsuccessfully deleted`);
 
 
         console.error('Delete order shipment error:', err);
       },
     });
   }
+
 
   private extractErrorMessage(err: any): string | null {
     if (err?.error) {
@@ -173,4 +201,9 @@ export class PosiljkeComponent
   }
 
 
+  onEdit(orderShipment:ListOrderShipmentsQueryDto) {
+
+    this.router.navigate(['/admin/posiljke', orderShipment.id, 'edit']);
+
+  }
 }
