@@ -7,7 +7,7 @@ import {
   CreateOrderShipmentsCommand,
   GetOrderShipmentsByIdQueryDto,
   ListOrderShipmentsRequest,
-  ListOrderShipmentsResponse,
+  ListOrderShipmentsResponse, UpdateOrderShipmentsCommand,
 } from './order-shipments-api.model';
 
 @Injectable({
@@ -56,31 +56,9 @@ export class OrderShipmentsApiService {
   //  * PUT /ProductCategories/{id}
   //  * Update an existing category.
   //  */
-  // update(id: number, payload: ProductCategoriesCommand): Observable<void> {
-  //   return this.http.put<void>(`${this.baseUrl}/${id}`, payload);
-  // }
-  //
-  // /**
-  //  * DELETE /ProductCategories/{id}
-  //  * Delete a category.
-  //  */
-  // delete(id: number): Observable<void> {
-  //   return this.http.delete<void>(`${this.baseUrl}/${id}`);
-  // }
-  //
-  // /**
-  //  * PUT /ProductCategories/{id}/disable
-  //  * Disable a category.
-  //  */
-  // disable(id: number): Observable<void> {
-  //   return this.http.put<void>(`${this.baseUrl}/${id}/disable`, {});
-  // }
-  //
-  // /**
-  //  * PUT /ProductCategories/{id}/enable
-  //  * Enable a category.
-  //  */
-  // enable(id: number): Observable<void> {
-  //   return this.http.put<void>(`${this.baseUrl}/${id}/enable`, {});
-  // }
+  update(id: number, payload: UpdateOrderShipmentsCommand): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/${id}`, payload);
+  }
+
+
 }

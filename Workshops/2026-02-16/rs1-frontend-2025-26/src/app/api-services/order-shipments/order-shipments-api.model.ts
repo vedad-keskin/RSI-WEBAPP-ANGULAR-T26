@@ -75,7 +75,9 @@ export interface CreateOrderShipmentsCommand {
 //  * Corresponds to: UpdateProductCategoryCommand.cs
 //  */
 
-// export interface UpdateProductCategoryCommand {
-//   name: string;
-//   isEnabled: boolean;
-// }
+export interface UpdateOrderShipmentsCommand {
+  shipmentNumber: string;
+  orderId: number;
+  shippingCost: number;
+  status: OrderShipmentStatusType;
+}

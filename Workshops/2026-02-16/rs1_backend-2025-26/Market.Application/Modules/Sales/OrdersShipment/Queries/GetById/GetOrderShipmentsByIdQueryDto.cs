@@ -12,4 +12,6 @@ public class GetOrderShipmentsByIdQueryDto
 
     public required DateTime ShippedAtUtc { get; set; }
     public DateTime? DeliveredAtUtc { get; set; }
+
+    public required int OrderId { get; set; }
 }

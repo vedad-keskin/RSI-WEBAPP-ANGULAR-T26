@@ -39,6 +39,35 @@ export class OrderShipmentsFormService {
     });
   }
 
+  updateOrderShipmentsForm(orderShipment?: GetOrderShipmentsByIdQueryDto): FormGroup {
+    return this.fb.group({
+      shipmentNumber: [
+        orderShipment?.shipmentNumber ?? '',
+        [
+          Validators.required,
+          // Validators.minLength(3),
+          Validators.maxLength(20)
+        ]
+      ],
+      shippingCost: [
+        orderShipment?.shippingCost ?? 0,
+        [
+          Validators.required,
+          Validators.min(0.01),
+          Validators.max(1000000)
+        ]
+      ],
+      orderId: [
+        orderShipment?.orderId ?? null,
+        [Validators.required]
+      ],
+      status: [
+        orderShipment?.status ?? 1,
+        [Validators.required]
+      ]
+    });
+  }
+
 
 
   /**
