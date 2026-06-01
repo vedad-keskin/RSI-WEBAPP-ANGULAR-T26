@@ -1,14 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import {BaseListPagedComponent} from '../../../core/components/base-classes/base-list-paged-component';
 import {
-  ListProductCategoriesQueryDto,
-  ListProductCategoriesRequest
-} from '../../../api-services/product-categories/product-categories-api.model';
-import {
   ListOrderShipmentsQueryDto,
   ListOrderShipmentsRequest
 } from '../../../api-services/order-shipments/order-shipments-api.model';
-import {ProductCategoriesApiService} from '../../../api-services/product-categories/product-categories-api.service';
 import {MatDialog} from '@angular/material/dialog';
 import {ToasterService} from '../../../core/services/toaster.service';
 import {DialogHelperService} from '../../shared/services/dialog-helper.service';
@@ -30,7 +25,6 @@ export class PosiljkeComponent
 
   protected readonly OrderShipmentStatusHelper = OrderShipmentStatusHelper;
 
-
   private api = inject(OrderShipmentsApiService);
   private ordersApi = inject(OrdersApiService);
 
@@ -43,6 +37,10 @@ export class PosiljkeComponent
 
   orderOptions:any;
   orderFilter: number | null = null;
+
+  // Order filter (null = sve narudžbe)
+  orderFilter: number | null = null;
+  narudzbe: ListOrdersQueryDto[] = [];
 
   constructor() {
     super();
@@ -98,6 +96,15 @@ export class PosiljkeComponent
       },
     });
 
+  }
+
+  // === Filters ===
+
+  onOrderFilterChange(orderId: number | null): void {
+    this.orderFilter = orderId;
+    this.request.orderId = orderId;
+    this.request.paging.page = 1;
+    this.loadPagedData();
   }
 
   displayedColumns: string[] = [
