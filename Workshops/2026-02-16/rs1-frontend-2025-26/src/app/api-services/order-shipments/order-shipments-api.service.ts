@@ -3,7 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { buildHttpParams } from '../../core/models/build-http-params';
-import {ListOrderShipmentsRequest, ListOrderShipmentsResponse} from './order-shipments-api.model';
+import {
+  CreateOrderShipmentsCommand,
+  GetOrderShipmentsByIdQueryDto,
+  ListOrderShipmentsRequest,
+  ListOrderShipmentsResponse,
+} from './order-shipments-api.model';
 
 @Injectable({
   providedIn: 'root',
@@ -34,24 +39,24 @@ export class OrderShipmentsApiService {
    * GET /ProductCategories/{id}
    * Get a single category by ID.
    */
-  // getById(id: number): Observable<GetProductCategoryByIdQueryDto> {
-  //   return this.http.get<GetProductCategoryByIdQueryDto>(`${this.baseUrl}/${id}`);
-  // }
+  getById(id: number): Observable<GetOrderShipmentsByIdQueryDto> {
+    return this.http.get<GetOrderShipmentsByIdQueryDto>(`${this.baseUrl}/${id}`);
+  }
   //
   // /**
   //  * POST /ProductCategories
   //  * Create a new category.
   //  * @returns ID of the newly created category
   //  */
-  // create(payload: CreateProductCategoryCommand): Observable<number> {
-  //   return this.http.post<number>(this.baseUrl, payload);
-  // }
+  create(payload: CreateOrderShipmentsCommand): Observable<number> {
+    return this.http.post<number>(this.baseUrl, payload);
+  }
   //
   // /**
   //  * PUT /ProductCategories/{id}
   //  * Update an existing category.
   //  */
-  // update(id: number, payload: UpdateProductCategoryCommand): Observable<void> {
+  // update(id: number, payload: ProductCategoriesCommand): Observable<void> {
   //   return this.http.put<void>(`${this.baseUrl}/${id}`, payload);
   // }
   //

@@ -44,11 +44,15 @@ export type ListOrderShipmentsResponse = PageResult<ListOrderShipmentsQueryDto>;
  * Response for GET /ProductCategories/{id}
  * Corresponds to: GetProductCategoryByIdQueryDto.cs
  */
-// export interface GetProductCategoryByIdQueryDto {
-//   id: number;
-//   name: string;
-//   isEnabled: boolean;
-// }
+export interface GetOrderShipmentsByIdQueryDto {
+  id: number;
+  shipmentNumber: string;
+  status: OrderShipmentStatusType;
+  shippingCost: number;
+  shippedAtUtc: string; // ISO date string
+  deliveredAtUtc: string | null; // ISO date string
+  orderId: number;
+}
 
 /**
  * Paged response for GET /ProductCategories
@@ -60,15 +64,17 @@ export type ListOrderShipmentsResponse = PageResult<ListOrderShipmentsQueryDto>;
  * Command for POST /ProductCategories
  * Corresponds to: CreateProductCategoryCommand.cs
  */
-// export interface CreateProductCategoryCommand {
-//   name: string;
-//   isEnabled: boolean;
-// }
+export interface CreateOrderShipmentsCommand {
+  shipmentNumber: string;
+  orderId: number;
+  shippingCost: number;
+}
 //
 // /**
 //  * Command for PUT /ProductCategories/{id}
 //  * Corresponds to: UpdateProductCategoryCommand.cs
 //  */
+
 // export interface UpdateProductCategoryCommand {
 //   name: string;
 //   isEnabled: boolean;

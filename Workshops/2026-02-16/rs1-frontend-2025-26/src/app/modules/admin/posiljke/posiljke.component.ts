@@ -16,6 +16,7 @@ import {OrderShipmentsApiService} from '../../../api-services/order-shipments/or
 import {OrderShipmentStatusHelper} from '../../../api-services/order-shipments/order-shipments-status.helper';
 import {OrdersApiService} from '../../../api-services/orders/orders-api.service';
 import {DialogButton} from '../../shared/models/dialog-config.model';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-posiljke',
@@ -37,6 +38,8 @@ export class PosiljkeComponent
   private dialog = inject(MatDialog);
   private toaster = inject(ToasterService);
   private dialogHelper = inject(DialogHelperService);
+  private router = inject(Router);
+
 
   orderOptions:any;
   orderFilter: number | null = null;
@@ -108,6 +111,10 @@ export class PosiljkeComponent
   ];
 
   onCreate(): void {
+
+    this.router.navigate(['/admin/posiljke/add']);
+
+
   }
 
 
@@ -185,6 +192,7 @@ export class PosiljkeComponent
 
     return null;
   }
+
 
 
 }
