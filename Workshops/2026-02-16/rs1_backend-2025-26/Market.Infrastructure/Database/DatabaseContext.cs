@@ -18,6 +18,7 @@ public partial class DatabaseContext : DbContext, IAppDbContext
     public DbSet<FakturaEntity> Fakture => Set<FakturaEntity>();
     public DbSet<OrderShipmentEntity> OrderShipments => Set<OrderShipmentEntity>();
     public DbSet<UplataEntity> Uplate => Set<UplataEntity>();
+    public DbSet<UplataLinijaEntity> UplataLinije => Set<UplataLinijaEntity>();
 
     private readonly TimeProvider _clock;
     public DatabaseContext(DbContextOptions<DatabaseContext> options, TimeProvider clock) : base(options)

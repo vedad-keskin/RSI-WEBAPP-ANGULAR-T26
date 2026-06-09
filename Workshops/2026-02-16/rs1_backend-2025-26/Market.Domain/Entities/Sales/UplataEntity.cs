@@ -33,6 +33,11 @@ public class UplataEntity : BaseEntity
     public required decimal UkupanIznos { get; set; }
 
     /// <summary>
+    /// Collection of payment lines.
+    /// </summary>
+    public IReadOnlyCollection<UplataLinijaEntity> Linije { get; set; } = new List<UplataLinijaEntity>();
+
+    /// <summary>
     /// Single source of truth for technical/business constraints.
     /// Used in validators and EF configuration.
     /// </summary>

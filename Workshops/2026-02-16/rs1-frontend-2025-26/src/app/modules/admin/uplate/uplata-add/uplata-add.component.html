@@ -50,13 +50,13 @@
           <div class="form-row">
             <mat-form-field appearance="outline" class="form-field">
               <mat-label>Broj uplate</mat-label>
-              <input matInput type="text"  required />
+              <input matInput type="text" formControlName="brojUplate" required />
               <mat-icon matSuffix>tag</mat-icon>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="form-field">
               <mat-label>Narudzba</mat-label>
-              <mat-select  required (selectionChange)="onOrderChange($event.value)">
+              <mat-select formControlName="orderId" required (selectionChange)="onOrderChange($event.value)">
                 <mat-option *ngFor="let narudzba of narudzbe" [value]="narudzba.id">
                   {{ narudzba.referenceNumber }}
                 </mat-option>
@@ -69,6 +69,7 @@
             <mat-label>Napomena (opciono)</mat-label>
             <textarea
               matInput
+              formControlName="napomena"
               rows="3"
               placeholder="Unesite napomenu..."
             ></textarea>
@@ -119,7 +120,7 @@
               <div class="item-row-content">
                 <mat-form-field appearance="outline" class="item-field">
                   <mat-label>Proizvod</mat-label>
-                  <mat-select required>
+                  <mat-select formControlName="productId" required>
                     <mat-option *ngFor="let item of selectedOrderItems" [value]="item.product.id">
                       {{ item.product.name }}
                     </mat-option>
@@ -129,14 +130,17 @@
 
                 <mat-form-field appearance="outline" class="item-field">
                   <mat-label>Kolicina</mat-label>
-                  <input matInput type="number" min="1" required />
+                  <input matInput type="number" formControlName="kolicina" min="1" required />
                   <mat-icon matSuffix>tag</mat-icon>
                   <mat-error *ngIf="itemGroup.get('kolicina')?.invalid">Minimalno 1</mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="item-field">
                   <mat-label>Nacin placanja</mat-label>
-                  <mat-select required>
+                  <mat-select formControlName="nacinPlacanja" required>
+                    <mat-option *ngFor="let nacin of naciniPlacanja" [value]="nacin.id">
+                      {{ nacin.name }}
+                    </mat-option>
                   </mat-select>
                   <mat-icon matSuffix>payment</mat-icon>
                 </mat-form-field>

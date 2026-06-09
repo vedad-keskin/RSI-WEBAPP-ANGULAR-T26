@@ -18,5 +18,6 @@ public interface IAppDbContext
     DbSet<FakturaEntity> Fakture { get; }
     DbSet<OrderShipmentEntity> OrderShipments { get; }
     DbSet<UplataEntity> Uplate { get; }
+    DbSet<UplataLinijaEntity> UplataLinije { get; }
     Task<int> SaveChangesAsync(CancellationToken ct);
 }
