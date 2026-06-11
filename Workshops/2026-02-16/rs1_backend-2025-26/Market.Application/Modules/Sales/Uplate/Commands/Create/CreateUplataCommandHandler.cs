@@ -61,11 +61,11 @@ public class CreateUplataCommandHandler(IAppDbContext ctx)
 
         order.TotalAmountPaid += uplata.UkupanIznos;
         order.BalanceDue = RoundMoney(order.TotalAmount - order.TotalAmountPaid);
-        order.Status = order.BalanceDue == 0
+        order.Status = order.BalanceDue <= 0
             ? OrderStatusType.Paid
             : OrderStatusType.PartiallyPaid;
 
-        if (order.BalanceDue == 0 && !order.PaidAtUtc.HasValue)
+        if (order.BalanceDue <= 0 && !order.PaidAtUtc.HasValue)
         {
             order.PaidAtUtc = DateTime.UtcNow;
         }

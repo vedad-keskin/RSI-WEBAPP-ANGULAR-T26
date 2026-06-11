@@ -894,7 +894,7 @@ public static class DynamicDataSeeder
                 BrojUplate = "UPL-0001",
                 OrderId = orders[0].Id,
                 Napomena = "Prva uplata za narudžbu.",
-                UkupanIznos = 500.00m,
+                UkupanIznos = 0m,
                 CreatedAtUtc = DateTime.UtcNow.AddDays(-12)
             },
             new UplataEntity
@@ -902,7 +902,7 @@ public static class DynamicDataSeeder
                 BrojUplate = "UPL-0002",
                 OrderId = orders[1].Id,
                 Napomena = null,
-                UkupanIznos = 1200.00m,
+                UkupanIznos = 0m,
                 CreatedAtUtc = DateTime.UtcNow.AddDays(-8)
             },
             new UplataEntity
@@ -910,7 +910,7 @@ public static class DynamicDataSeeder
                 BrojUplate = "UPL-0003",
                 OrderId = orders[0].Id,
                 Napomena = "Druga rata.",
-                UkupanIznos = 750.00m,
+                UkupanIznos = 0m,
                 CreatedAtUtc = DateTime.UtcNow.AddDays(-3)
             }
         };
