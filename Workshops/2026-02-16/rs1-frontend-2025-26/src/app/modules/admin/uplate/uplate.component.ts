@@ -1,7 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { BaseListPagedComponent } from '../../../core/components/base-classes/base-list-paged-component';
 import { UplateApiService } from '../../../api-services/uplate/uplate-api.service';
-import { ListUplateQueryDto } from '../../../api-services/uplate/uplate-api.models';
+import {
+  ListUplateQueryDto,
+  ListUplateRequest
+} from '../../../api-services/uplate/uplate-api.models';
+import { ToasterService } from '../../../core/services/toaster.service';
 
 @Component({
   selector: 'app-uplate',
@@ -9,28 +14,38 @@ import { ListUplateQueryDto } from '../../../api-services/uplate/uplate-api.mode
   templateUrl: './uplate.component.html',
   styleUrl: './uplate.component.scss'
 })
-export class UplateComponent implements OnInit {
-  private router = inject(Router);
-  private uplateApiService = inject(UplateApiService);
+export class UplateComponent
+  extends BaseListPagedComponent<ListUplateQueryDto, ListUplateRequest>
+  implements OnInit {
 
-  uplate: ListUplateQueryDto[] = [];
+  private router = inject(Router);
+  private api = inject(UplateApiService);
+  private toaster = inject(ToasterService);
+
   displayedColumns: string[] = ['brojUplate', 'orderReferenceNumber', 'datumKreiranja', 'ukupanIznos'];
 
-  // Paging
-  pageSize = 10;
-
-  ngOnInit(): void {
-    this.loadUplate();
+  constructor() {
+    super();
+    this.request = new ListUplateRequest();
   }
 
-  loadUplate(): void {
-    this.uplateApiService.list(1, 100).subscribe({
+  ngOnInit(): void {
+    this.initList();
+  }
+
+  protected override loadPagedData(): void {
+    this.startLoading();
+
+    this.api.list(this.request).subscribe({
       next: (response) => {
-        this.uplate = response.items;
+        this.handlePageResult(response);
+        this.stopLoading();
       },
       error: (err) => {
-        console.error('Greška pri učitavanju uplata:', err);
-      }
+        this.stopLoading('Greška pri učitavanju uplata');
+        this.toaster.error('Greška pri učitavanju uplata');
+        console.error('Load uplate error:', err);
+      },
     });
   }
 

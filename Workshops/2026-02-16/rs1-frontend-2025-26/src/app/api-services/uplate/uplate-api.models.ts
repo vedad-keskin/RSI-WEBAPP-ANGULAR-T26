@@ -1,3 +1,4 @@
+import { BasePagedQuery } from '../../core/models/paging/base-paged-query';
 import { PageResult } from '../../core/models/paging/page-result';
 
 // === ENUMS ===
@@ -14,6 +15,12 @@ export enum NacinPlacanjaType {
 }
 
 // === QUERIES (READ) ===
+
+/**
+ * Query parameters for GET /Uplate
+ * Corresponds to: ListUplateQuery.cs
+ */
+export class ListUplateRequest extends BasePagedQuery {}
 
 /**
  * Response item for GET /Uplate

@@ -135,6 +135,12 @@ $border-color: rgba(73, 118, 181, 0.15);
     color: $text-primary;
   }
 
+  .paginator-wrapper {
+    padding: 16px;
+    background: $primary-lighter;
+    border-top: 1px solid $border-color;
+  }
+
   .table-footer {
     padding: 16px 24px;
     background: $primary-lighter;

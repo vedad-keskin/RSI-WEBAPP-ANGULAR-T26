@@ -1,8 +1,9 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { ListUplateResponse } from './uplate-api.models';
+import { buildHttpParams } from '../../core/models/build-http-params';
+import { ListUplateRequest, ListUplateResponse } from './uplate-api.models';
 
 @Injectable({
   providedIn: 'root'
@@ -15,10 +16,8 @@ export class UplateApiService {
    * GET /Uplate
    * List uplate with pagination.
    */
-  list(pageNumber: number = 1, pageSize: number = 10): Observable<ListUplateResponse> {
-    const params = new HttpParams()
-      .set('Paging.PageNumber', pageNumber.toString())
-      .set('Paging.PageSize', pageSize.toString());
+  list(request?: ListUplateRequest): Observable<ListUplateResponse> {
+    const params = request ? buildHttpParams(request as any) : undefined;
 
     return this.http.get<ListUplateResponse>(this.baseUrl, { params });
   }
