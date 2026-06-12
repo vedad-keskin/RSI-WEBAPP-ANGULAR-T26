@@ -73,9 +73,9 @@ export interface ListOrdersQueryDto {
  * Product info in order items
  */
 export interface ListOrdersWithItemsQueryDtoItemProduct {
-  id: number;
-  name: string | null;
-  price: number;
+  productId: number;
+  productName: string | null;
+  productCategoryName: string | null;
 }
 
 /**

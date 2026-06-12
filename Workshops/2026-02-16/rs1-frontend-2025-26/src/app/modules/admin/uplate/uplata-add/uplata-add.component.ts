@@ -1,12 +1,15 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { NacinPlacanjaType } from '../../../../api-services/uplate/uplate-api.models';
 import {
   ListOrdersWithItemsQueryDto,
   ListOrdersWithItemsQueryDtoItem
 } from '../../../../api-services/orders/orders-api.models';
 import { ToasterService } from '../../../../core/services/toaster.service';
+import {OrdersApiService} from '../../../../api-services/orders/orders-api.service';
+import {largePaging} from '../../../../core/models/paging/paging-utils';
+import {FakturaTip} from '../../../../api-services/fakture/fakture-api.models';
 
 interface NacinPlacanja {
   id: NacinPlacanjaType;
@@ -20,8 +23,12 @@ interface NacinPlacanja {
   styleUrl: './uplata-add.component.scss'
 })
 export class UplataAddComponent implements OnInit {
+
   private router = inject(Router);
   private fb = inject(FormBuilder);
+  private ordersApi = inject(OrdersApiService);
+  private toaster = inject(ToasterService);
+
 
   form: FormGroup;
   isSaving = false;
@@ -31,10 +38,16 @@ export class UplataAddComponent implements OnInit {
   narudzbe: ListOrdersWithItemsQueryDto[] = [];
   selectedOrderItems: ListOrdersWithItemsQueryDtoItem[] = [];
 
+
+  naciniPlacanja: NacinPlacanja[] = [
+    { id: NacinPlacanjaType.Kes, name: 'Keš' },
+    { id: NacinPlacanjaType.Kartica, name: 'Kartica' }
+  ];
+
   constructor() {
     this.form = this.fb.group({
-      brojUplate: [''],
-      orderId: [''],
+      brojUplate: ['' , Validators.required],
+      orderId: ['', Validators.required],
       napomena: [''],
       items: this.fb.array([])
     });
@@ -45,11 +58,45 @@ export class UplataAddComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadOrders();
   }
+
+
+  private loadOrders(): void {
+
+    this.isLoading = true;
+
+
+    this.ordersApi.listWithItems({ paging: largePaging }).subscribe({
+      next: (response) => {
+        this.narudzbe = response.items;
+        this.isLoading = false;
+
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.toaster.error('Failed to load orders');
+        console.error('Load orders error:', err);
+      }
+    });
+  }
+
+
 
   onOrderChange(orderId: number): void {
     const order = this.narudzbe.find(o => o.id === orderId);
     this.selectedOrderItems = order ? order.items : [];
+
+    // this.items.controls.forEach((control) => {
+    //
+    //   control.patchValue({
+    //
+    //     productId: '',
+    //
+    //   });
+    //
+    // })
+
   }
 
   get items(): FormArray {
@@ -58,9 +105,9 @@ export class UplataAddComponent implements OnInit {
 
   addItem(): void {
     const itemGroup = this.fb.group({
-      productId: [''],
-      kolicina: [1],
-      nacinPlacanja: ['']
+      productId: ['', Validators.required],
+      kolicina: [1, [Validators.required, Validators.min(1)]],
+      nacinPlacanja: ['', Validators.required],
     });
     this.items.push(itemGroup);
   }
