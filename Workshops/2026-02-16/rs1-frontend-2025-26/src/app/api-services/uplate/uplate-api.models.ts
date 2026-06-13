@@ -39,4 +39,18 @@ export interface ListUplateQueryDto {
  */
 export type ListUplateResponse = PageResult<ListUplateQueryDto>;
 
+// === COMMANDS (WRITE) ===
+
+export interface CreateUplataCommandItem {
+  productId: number;
+  kolicina: number;
+  nacinPlacanja: NacinPlacanjaType;
+}
+
+export interface CreateUplataCommand {
+  brojUplate: string;
+  orderId: number;
+  napomena?: string | null;
+  items: CreateUplataCommandItem[];
+}
 
