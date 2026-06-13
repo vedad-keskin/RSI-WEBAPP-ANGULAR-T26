@@ -2,9 +2,10 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import {ListUplateQuery, ListUplateResponse} from './uplate-api.models';
+import {CreateUplataCommand, ListUplateQuery, ListUplateResponse} from './uplate-api.models';
 import {ListOrderShipmentsRequest, ListOrderShipmentsResponse} from '../order-shipments/order-shipments-api.model';
 import {buildHttpParams} from '../../core/models/build-http-params';
+import {CreateOrderCommand} from '../orders/orders-api.models';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,13 @@ export class UplateApiService {
       params,
     });
   }
+
+
+  create(payload: CreateUplataCommand): Observable<number> {
+    return this.http.post<number>(this.baseUrl, payload);
+  }
+
+
 
 
 }

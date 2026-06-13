@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import { NacinPlacanjaType } from '../../../../api-services/uplate/uplate-api.models';
+import {CreateUplataCommand, NacinPlacanjaType} from '../../../../api-services/uplate/uplate-api.models';
 import {
   ListOrdersWithItemsQueryDto,
   ListOrdersWithItemsQueryDtoItem
@@ -10,6 +10,8 @@ import { ToasterService } from '../../../../core/services/toaster.service';
 import {OrdersApiService} from '../../../../api-services/orders/orders-api.service';
 import {largePaging} from '../../../../core/models/paging/paging-utils';
 import {FakturaTip} from '../../../../api-services/fakture/fakture-api.models';
+import {UplateApiService} from '../../../../api-services/uplate/uplate-api.service';
+import {CreateOrderShipmentsCommand} from '../../../../api-services/order-shipments/order-shipments-api.model';
 
 interface NacinPlacanja {
   id: NacinPlacanjaType;
@@ -28,6 +30,7 @@ export class UplataAddComponent implements OnInit {
   private fb = inject(FormBuilder);
   private ordersApi = inject(OrdersApiService);
   private toaster = inject(ToasterService);
+  private api = inject(UplateApiService);
 
 
   form: FormGroup;
@@ -121,5 +124,36 @@ export class UplataAddComponent implements OnInit {
   }
 
   onSubmit(): void {
+
+    if (this.form.invalid || this.isLoading || this.isSaving) {
+      return;
+    }
+
+    this.isSaving = true;
+
+    const command: CreateUplataCommand = {
+      brojUplate: this.form.value.brojUplate,
+      orderId: this.form.value.orderId,
+      napomena: this.form.value.napomena,
+      items: this.form.value.items,
+    };
+
+    this.api.create(command).subscribe({
+      next: () => {
+
+        this.isSaving = false;
+
+        this.toaster.success('Uplata created successfully');
+        this.router.navigate(['/admin/uplate']);
+      },
+      error: (err) => {
+        this.isSaving = false;
+
+        this.toaster.success('Uplata created unsuccessfully');
+        console.error('Uplata created unsuccessfully:', err);
+      }
+    });
+
+
   }
 }

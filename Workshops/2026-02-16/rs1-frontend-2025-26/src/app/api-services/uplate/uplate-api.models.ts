@@ -39,4 +39,22 @@ export interface ListUplateQueryDto {
  */
 export type ListUplateResponse = PageResult<ListUplateQueryDto>;
 
+export interface CreateUplataCommandItem {
+  productId: number;
+  kolicina: number;
+  nacinPlacanja : NacinPlacanjaType;
+}
+
+/**
+ * Command for POST /Orders
+ * Corresponds to: CreateOrderCommand.cs
+ */
+export interface CreateUplataCommand {
+  brojUplate: string;
+  orderId: number;
+  napomena?: string | null;
+  items?: CreateUplataCommandItem[];
+}
+
+
 
