@@ -41,9 +41,24 @@ public class CreateUplataCommandHandler(IAppDbContext ctx)
         Dictionary<int, ProductEntity> productsMap = products.ToDictionary(x => x.Id);
 
 
+        var items = request.Items
+            .GroupBy(x => (x.ProductId,  x.NacinPlacanja) )
+            .Select(x => new
+            {
+
+                ProductId = x.Key.ProductId,
+                NacinPlacanja = x.Key.NacinPlacanja,
+                Kolicina = x.Sum(xx => xx.Kolicina)
+
+            })
+            .ToList();
+
+
         decimal ukupanIznos = 0m;
 
-        foreach (var item in request.Items)
+
+
+        foreach (var item in items)
         {
             ProductEntity? product = productsMap.GetValueOrDefault(item.ProductId); //<--- bolja performansa O(n) jer koristi dictionary
 
