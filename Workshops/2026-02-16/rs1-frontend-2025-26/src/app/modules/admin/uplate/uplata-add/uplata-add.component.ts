@@ -1,14 +1,17 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NacinPlacanjaType } from '../../../../api-services/uplate/uplate-api.models';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {CreateUplataCommand, NacinPlacanjaType} from '../../../../api-services/uplate/uplate-api.models';
 import {
   ListOrdersWithItemsQueryDto,
   ListOrdersWithItemsQueryDtoItem
 } from '../../../../api-services/orders/orders-api.models';
 import { ToasterService } from '../../../../core/services/toaster.service';
-import { OrdersApiService } from '../../../../api-services/orders/orders-api.service';
-import { largePaging } from '../../../../core/models/paging/paging-utils';
+import {OrdersApiService} from '../../../../api-services/orders/orders-api.service';
+import {largePaging} from '../../../../core/models/paging/paging-utils';
+import {FakturaTip} from '../../../../api-services/fakture/fakture-api.models';
+import {UplateApiService} from '../../../../api-services/uplate/uplate-api.service';
+import {CreateOrderShipmentsCommand} from '../../../../api-services/order-shipments/order-shipments-api.model';
 
 interface NacinPlacanja {
   id: NacinPlacanjaType;
@@ -22,26 +25,31 @@ interface NacinPlacanja {
   styleUrl: './uplata-add.component.scss'
 })
 export class UplataAddComponent implements OnInit {
+
   private router = inject(Router);
   private fb = inject(FormBuilder);
   private ordersApi = inject(OrdersApiService);
   private toaster = inject(ToasterService);
+  private api = inject(UplateApiService);
+
 
   form: FormGroup;
   isSaving = false;
   isLoading = false;
 
+
   narudzbe: ListOrdersWithItemsQueryDto[] = [];
   selectedOrderItems: ListOrdersWithItemsQueryDtoItem[] = [];
 
+
   naciniPlacanja: NacinPlacanja[] = [
-    { id: NacinPlacanjaType.Kes, name: 'Kes' },
+    { id: NacinPlacanjaType.Kes, name: 'Keš' },
     { id: NacinPlacanjaType.Kartica, name: 'Kartica' }
   ];
 
   constructor() {
     this.form = this.fb.group({
-      brojUplate: ['', Validators.required],
+      brojUplate: ['' , Validators.required],
       orderId: ['', Validators.required],
       napomena: [''],
       items: this.fb.array([])
@@ -56,13 +64,17 @@ export class UplataAddComponent implements OnInit {
     this.loadOrders();
   }
 
+
   private loadOrders(): void {
+
     this.isLoading = true;
+
 
     this.ordersApi.listWithItems({ paging: largePaging }).subscribe({
       next: (response) => {
         this.narudzbe = response.items;
         this.isLoading = false;
+
       },
       error: (err) => {
         this.isLoading = false;
@@ -72,9 +84,22 @@ export class UplataAddComponent implements OnInit {
     });
   }
 
+
+
   onOrderChange(orderId: number): void {
     const order = this.narudzbe.find(o => o.id === orderId);
     this.selectedOrderItems = order ? order.items : [];
+
+    // this.items.controls.forEach((control) => {
+    //
+    //   control.patchValue({
+    //
+    //     productId: '',
+    //
+    //   });
+    //
+    // })
+
   }
 
   get items(): FormArray {
@@ -85,7 +110,7 @@ export class UplataAddComponent implements OnInit {
     const itemGroup = this.fb.group({
       productId: ['', Validators.required],
       kolicina: [1, [Validators.required, Validators.min(1)]],
-      nacinPlacanja: ['', Validators.required]
+      nacinPlacanja: ['', Validators.required],
     });
     this.items.push(itemGroup);
   }
@@ -99,10 +124,36 @@ export class UplataAddComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.form.valid) {
-      // TODO: Implementirati save logiku
-      console.log('Form data:', this.form.value);
-      this.router.navigate(['/admin/uplate']);
+
+    if (this.form.invalid || this.isLoading || this.isSaving) {
+      return;
     }
+
+    this.isSaving = true;
+
+    const command: CreateUplataCommand = {
+      brojUplate: this.form.value.brojUplate,
+      orderId: this.form.value.orderId,
+      napomena: this.form.value.napomena,
+      items: this.form.value.items,
+    };
+
+    this.api.create(command).subscribe({
+      next: () => {
+
+        this.isSaving = false;
+
+        this.toaster.success('Uplata created successfully');
+        this.router.navigate(['/admin/uplate']);
+      },
+      error: (err) => {
+        this.isSaving = false;
+
+        this.toaster.success('Uplata created unsuccessfully');
+        console.error('Uplata created unsuccessfully:', err);
+      }
+    });
+
+
   }
 }

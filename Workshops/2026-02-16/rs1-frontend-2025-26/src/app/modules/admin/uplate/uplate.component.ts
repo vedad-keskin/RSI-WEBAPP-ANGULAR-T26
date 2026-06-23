@@ -1,9 +1,15 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { BaseListPagedComponent } from '../../../core/components/base-classes/base-list-paged-component';
 import { UplateApiService } from '../../../api-services/uplate/uplate-api.service';
-import { ListUplateQueryDto, ListUplateRequest } from '../../../api-services/uplate/uplate-api.models';
-import { ToasterService } from '../../../core/services/toaster.service';
+import {ListUplateQuery, ListUplateQueryDto} from '../../../api-services/uplate/uplate-api.models';
+import {BaseListPagedComponent} from '../../../core/components/base-classes/base-list-paged-component';
+import {
+  ListOrderShipmentsQueryDto,
+  ListOrderShipmentsRequest
+} from '../../../api-services/order-shipments/order-shipments-api.model';
+import {MatDialog} from '@angular/material/dialog';
+import {ToasterService} from '../../../core/services/toaster.service';
+import {DialogHelperService} from '../../shared/services/dialog-helper.service';
 
 @Component({
   selector: 'app-uplate',
@@ -12,39 +18,49 @@ import { ToasterService } from '../../../core/services/toaster.service';
   styleUrl: './uplate.component.scss'
 })
 export class UplateComponent
-  extends BaseListPagedComponent<ListUplateQueryDto, ListUplateRequest>
+  extends BaseListPagedComponent<ListUplateQueryDto, ListUplateQuery>
   implements OnInit {
 
-  private router = inject(Router);
-  private uplateApiService = inject(UplateApiService);
-  private toaster = inject(ToasterService);
 
+  private router = inject(Router);
+  private api = inject(UplateApiService);
+  private dialog = inject(MatDialog);
+  private toaster = inject(ToasterService);
+  private dialogHelper = inject(DialogHelperService);
+
+  // uplate: ListUplateQueryDto[] = [];
   displayedColumns: string[] = ['brojUplate', 'orderReferenceNumber', 'datumKreiranja', 'ukupanIznos'];
+
 
   constructor() {
     super();
-    this.request = new ListUplateRequest();
-    this.request.paging.pageSize = 10;
+    this.request = new ListOrderShipmentsRequest();
   }
 
+
   ngOnInit(): void {
+    // this.loadUplate();
     this.initList();
   }
 
   protected override loadPagedData(): void {
+
     this.startLoading();
 
-    this.uplateApiService.list(this.request).subscribe({
+    this.api.list(this.request).subscribe({
       next: (response) => {
         this.handlePageResult(response);
         this.stopLoading();
       },
       error: (err) => {
-        this.stopLoading('Greška pri učitavanju uplata');
-        console.error('Greška pri učitavanju uplata:', err);
-      }
+        this.stopLoading('Failed to load order shipments');
+        console.error('Load order shipments error:', err);
+      },
     });
+
   }
+
+
 
   onNovaUplata(): void {
     this.router.navigate(['/admin/uplate/add']);

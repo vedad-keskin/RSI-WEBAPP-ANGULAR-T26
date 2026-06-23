@@ -32,15 +32,15 @@ public class UplataEntity : BaseEntity
     /// </summary>
     public required decimal UkupanIznos { get; set; }
 
-    /// <summary>
-    /// Collection of payment lines.
-    /// </summary>
-    public IReadOnlyCollection<UplataLinijaEntity> Linije { get; set; } = new List<UplataLinijaEntity>();
+    ///// <summary>
+    ///// Collection of order items.
+    /////
+    ///// **Napomena za studente:**
 
-    /// <summary>
-    /// Single source of truth for technical/business constraints.
-    /// Used in validators and EF configuration.
-    /// </summary>
+    ///// </summary>
+    public IReadOnlyCollection<UplataLinijeEntity> Items { get; set; } = new List<UplataLinijeEntity>();
+
+
     public static class Constraints
     {
         public const int BrojUplateMaxLength = 20;

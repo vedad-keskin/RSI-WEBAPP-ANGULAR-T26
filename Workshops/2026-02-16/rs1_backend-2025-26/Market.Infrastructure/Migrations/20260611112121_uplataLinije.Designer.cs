@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Market.Infrastructure.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20260609080528_AddUplataLinije")]
-    partial class AddUplataLinije
+    [Migration("20260611112121_uplataLinije")]
+    partial class uplataLinije
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -536,7 +536,7 @@ namespace Market.Infrastructure.Migrations
                     b.ToTable("Uplate", (string)null);
                 });
 
-            modelBuilder.Entity("Market.Domain.Entities.Sales.UplataLinijaEntity", b =>
+            modelBuilder.Entity("Market.Domain.Entities.Sales.UplataLinijeEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -549,10 +549,6 @@ namespace Market.Infrastructure.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
-
-                    b.Property<decimal>("Iznos")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Kolicina")
                         .HasPrecision(18, 2)
@@ -576,7 +572,7 @@ namespace Market.Infrastructure.Migrations
 
                     b.HasIndex("UplataId");
 
-                    b.ToTable("UplataLinije", (string)null);
+                    b.ToTable("UplataLinije");
                 });
 
             modelBuilder.Entity("Market.Domain.Entities.Catalog.ProductEntity", b =>
@@ -672,16 +668,16 @@ namespace Market.Infrastructure.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("Market.Domain.Entities.Sales.UplataLinijaEntity", b =>
+            modelBuilder.Entity("Market.Domain.Entities.Sales.UplataLinijeEntity", b =>
                 {
                     b.HasOne("Market.Domain.Entities.Catalog.ProductEntity", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Market.Domain.Entities.Sales.UplataEntity", "Uplata")
-                        .WithMany("Linije")
+                        .WithMany("Items")
                         .HasForeignKey("UplataId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -715,7 +711,7 @@ namespace Market.Infrastructure.Migrations
 
             modelBuilder.Entity("Market.Domain.Entities.Sales.UplataEntity", b =>
                 {
-                    b.Navigation("Linije");
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

@@ -64,7 +64,13 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
 
-    <app-fit-paginator-bar [vm]="this"></app-fit-paginator-bar>
+
+    <!-- Paginator -->
+    <div class="paginator-wrapper">
+      <app-fit-paginator-bar [vm]="this"></app-fit-paginator-bar>
+    </div>
+
+
 
   </div>
 </div>

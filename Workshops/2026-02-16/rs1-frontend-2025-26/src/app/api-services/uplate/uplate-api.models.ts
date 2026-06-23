@@ -1,5 +1,5 @@
-import { BasePagedQuery } from '../../core/models/paging/base-paged-query';
 import { PageResult } from '../../core/models/paging/page-result';
+import {BasePagedQuery} from '../../core/models/paging/base-paged-query';
 
 // === ENUMS ===
 
@@ -16,11 +16,8 @@ export enum NacinPlacanjaType {
 
 // === QUERIES (READ) ===
 
-/**
- * Query parameters for GET /Uplate
- * Corresponds to: ListUplateQuery.cs
- */
-export class ListUplateRequest extends BasePagedQuery {
+
+export class ListUplateQuery extends BasePagedQuery {
 }
 
 /**
@@ -41,5 +38,23 @@ export interface ListUplateQueryDto {
  * Paged response for GET /Uplate
  */
 export type ListUplateResponse = PageResult<ListUplateQueryDto>;
+
+export interface CreateUplataCommandItem {
+  productId: number;
+  kolicina: number;
+  nacinPlacanja : NacinPlacanjaType;
+}
+
+/**
+ * Command for POST /Orders
+ * Corresponds to: CreateOrderCommand.cs
+ */
+export interface CreateUplataCommand {
+  brojUplate: string;
+  orderId: number;
+  napomena?: string | null;
+  items?: CreateUplataCommandItem[];
+}
+
 
 

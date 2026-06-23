@@ -1,25 +1,25 @@
-using Market.Domain.Common;
+﻿using Market.Domain.Common;
 using Market.Domain.Entities.Catalog;
 
 namespace Market.Domain.Entities.Sales;
 
 /// <summary>
-/// Represents a single product line within a payment.
+/// Represents a single product line within an order.
 /// </summary>
-public class UplataLinijaEntity : BaseEntity
+public class UplataLinijeEntity : BaseEntity
 {
     /// <summary>
-    /// ID of the parent payment.
+    /// ID of the parent order.
     /// </summary>
     public int UplataId { get; set; }
 
     /// <summary>
-    /// Associated payment. (optional)
+    /// Associated order. (optional)
     /// </summary>
     public required UplataEntity? Uplata { get; set; }
 
     /// <summary>
-    /// ID of the product being paid.
+    /// ID of the product being ordered.
     /// </summary>
     public required int ProductId { get; set; }
 
@@ -29,17 +29,14 @@ public class UplataLinijaEntity : BaseEntity
     public ProductEntity? Product { get; set; }
 
     /// <summary>
-    /// Quantity of the product paid.
+    /// Quantity of the product ordered.
     /// </summary>
     public required decimal Kolicina { get; set; }
 
     /// <summary>
-    /// Payment method for this line.
+    /// Current status of the order.
     /// </summary>
     public required NacinPlacanjaType NacinPlacanja { get; set; }
 
-    /// <summary>
-    /// Line amount (Kolicina × unit price).
-    /// </summary>
-    public required decimal Iznos { get; set; }
+
 }

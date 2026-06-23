@@ -880,90 +880,44 @@ public static class DynamicDataSeeder
         if (await context.Uplate.AnyAsync())
             return;
 
-        var orders = await context.Orders
-            .Include(o => o.Items)
-            .ToListAsync();
+        var orders = await context.Orders.ToListAsync();
         if (!orders.Any())
         {
             Console.WriteLine("⚠️  No orders found. Skipping uplate seed.");
             return;
         }
 
-        // Uplata 1 - linije iz prve narudzbe
-        var order1Items = orders[0].Items.ToList();
-        var uplata1Linije = new List<UplataLinijaEntity>
+        var uplate = new List<UplataEntity>
         {
-            CreateUplataLinija(order1Items[0], 1, NacinPlacanjaType.Kes),
-            CreateUplataLinija(order1Items[1], 1, NacinPlacanjaType.Kartica)
+            new UplataEntity
+            {
+                BrojUplate = "UPL-0001",
+                OrderId = orders[0].Id,
+                Napomena = "Prva uplata za narudžbu.",
+                UkupanIznos = 0m,
+                CreatedAtUtc = DateTime.UtcNow.AddDays(-12)
+            },
+            new UplataEntity
+            {
+                BrojUplate = "UPL-0002",
+                OrderId = orders[1].Id,
+                Napomena = null,
+                UkupanIznos = 0m,
+                CreatedAtUtc = DateTime.UtcNow.AddDays(-8)
+            },
+            new UplataEntity
+            {
+                BrojUplate = "UPL-0003",
+                OrderId = orders[0].Id,
+                Napomena = "Druga rata.",
+                UkupanIznos = 0m,
+                CreatedAtUtc = DateTime.UtcNow.AddDays(-3)
+            }
         };
-        var uplata1 = new UplataEntity
-        {
-            BrojUplate = "UPL-0001",
-            OrderId = orders[0].Id,
-            Napomena = "Prva uplata za narudžbu.",
-            UkupanIznos = uplata1Linije.Sum(l => l.Iznos),
-            Linije = uplata1Linije,
-            CreatedAtUtc = DateTime.UtcNow.AddDays(-12)
-        };
-
-        // Uplata 2 - linije iz druge narudzbe
-        var order2Items = orders[1].Items.ToList();
-        var uplata2Linije = new List<UplataLinijaEntity>
-        {
-            CreateUplataLinija(order2Items[0], 1, NacinPlacanjaType.Kartica),
-            CreateUplataLinija(order2Items[1], 2, NacinPlacanjaType.Kes)
-        };
-        var uplata2 = new UplataEntity
-        {
-            BrojUplate = "UPL-0002",
-            OrderId = orders[1].Id,
-            Napomena = null,
-            UkupanIznos = uplata2Linije.Sum(l => l.Iznos),
-            Linije = uplata2Linije,
-            CreatedAtUtc = DateTime.UtcNow.AddDays(-8)
-        };
-
-        // Uplata 3 - linije iz prve narudzbe (druga rata)
-        var uplata3Linije = new List<UplataLinijaEntity>
-        {
-            CreateUplataLinija(order1Items[2], 1, NacinPlacanjaType.Kes)
-        };
-        var uplata3 = new UplataEntity
-        {
-            BrojUplate = "UPL-0003",
-            OrderId = orders[0].Id,
-            Napomena = "Druga rata.",
-            UkupanIznos = uplata3Linije.Sum(l => l.Iznos),
-            Linije = uplata3Linije,
-            CreatedAtUtc = DateTime.UtcNow.AddDays(-3)
-        };
-
-        var uplate = new List<UplataEntity> { uplata1, uplata2, uplata3 };
 
         context.Uplate.AddRange(uplate);
         await context.SaveChangesAsync();
 
         Console.WriteLine($"✅ Dynamic seed: {uplate.Count} uplate added.");
-    }
-
-    /// <summary>
-    /// Helper metoda za kreiranje linije uplate sa kalkulacijama.
-    /// </summary>
-    private static UplataLinijaEntity CreateUplataLinija(
-        OrderItemEntity orderItem,
-        decimal kolicina,
-        NacinPlacanjaType nacinPlacanja)
-    {
-        var iznos = Math.Round(kolicina * orderItem.UnitPrice, 2);
-
-        return new UplataLinijaEntity
-        {
-            ProductId = orderItem.ProductId,
-            Kolicina = kolicina,
-            NacinPlacanja = nacinPlacanja,
-            Iznos = iznos,
-            Uplata = null!,
-            CreatedAtUtc = DateTime.UtcNow
-        };
     }
 }

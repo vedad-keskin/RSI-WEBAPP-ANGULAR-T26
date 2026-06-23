@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Market.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddUplataLinije : Migration
+    public partial class uplataLinije : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,7 +21,6 @@ namespace Market.Infrastructure.Migrations
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     Kolicina = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     NacinPlacanja = table.Column<int>(type: "int", nullable: false),
-                    Iznos = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -34,7 +33,7 @@ namespace Market.Infrastructure.Migrations
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UplataLinije_Uplate_UplataId",
                         column: x => x.UplataId,
