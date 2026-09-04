@@ -5,6 +5,7 @@ using Market.Application.Modules.Catalog.ProductCategories.Commands.Status.Enabl
 using Market.Application.Modules.Catalog.ProductCategories.Commands.Update;
 using Market.Application.Modules.Catalog.ProductCategories.Queries.GetById;
 using Market.Application.Modules.Catalog.ProductCategories.Queries.List;
+using Market.Application.Modules.Catalog.ProductOffers.Commands.Delete;
 using Market.Application.Modules.Catalog.ProductOffers.Queries.List;
 
 namespace Market.API.Controllers;
@@ -31,12 +32,14 @@ public class ProductOffersController(ISender sender) : ControllerBase
     //    // no return -> 204 No Content
     //}
 
-    //[HttpDelete("{id:int}")]
-    //public async Task Delete(int id, CancellationToken ct)
-    //{
-    //    await sender.Send(new DeleteProductCategoryCommand { Id = id }, ct);
-    //    // no return -> 204 No Content
-    //}
+    [HttpDelete("{id:int}")]
+    [AllowAnonymous]
+
+    public async Task Delete(int id, CancellationToken ct)
+    {
+        await sender.Send(new DeleteProductOfferCommand { Id = id }, ct);
+        // no return -> 204 No Content
+    }
 
     //[HttpGet("{id:int}")]
     //[AllowAnonymous]

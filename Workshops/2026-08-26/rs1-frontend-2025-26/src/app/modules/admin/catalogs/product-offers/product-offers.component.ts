@@ -11,6 +11,8 @@ import {ToasterService} from '../../../../core/services/toaster.service';
 import {DialogHelperService} from '../../../shared/services/dialog-helper.service';
 import {ProductOffersApiService} from '../../../../api-services/product-offers/product-offers-api.service';
 import {OrdersApiService} from '../../../../api-services/orders/orders-api.service';
+import {DialogButton} from '../../../shared/models/dialog-config.model';
+import {getErrorMessage} from '../../../../core/interceptors/error-logging-interceptor.service';
 
 @Component({
   selector: 'app-product-offers',
@@ -45,7 +47,7 @@ export class ProductOffersComponent
 
   constructor() {
     super();
-    this.request = new ListProductsRequest();
+    this.request = new ListProductOffersRequest(); // <---
     this.request.paging.pageSize = 5;
   }
 
@@ -104,7 +106,48 @@ export class ProductOffersComponent
 
   add(): void { this.router.navigate(['/admin/product-offers/add']); }
   edit(id: number): void { this.router.navigate(['/admin/product-offers/edit', id]); }
-  delete(id: number): void { void id; /* TODO: student implementira potvrdu i brisanje. */ }
+
+
+  delete(row: any): void {  /* TODO: student implementira potvrdu i brisanje. */
+
+    this.dialogHelper.confirmDelete(row.code, `Da li želite obrisati ponudu ${row.code}?`).subscribe(result => {
+      if (result && result.button === DialogButton.DELETE) {
+        this.performDelete(row);
+      }
+    });
+
+  }
+
+  private performDelete(row: any) {
+
+    this.startLoading();
+
+    this.api.delete(row.id).subscribe({
+      next: () => {
+
+        this.toaster.success('Ponuda je uspješno obrisana');
+
+        this.request.paging.page = 1;
+
+
+        this.loadPagedData();
+      },
+      error: (err) => {
+        this.stopLoading();
+
+        this.toaster.error(getErrorMessage(err) || 'Neuspješno brisanje');
+
+
+        console.error('Delete offer error:', err);
+      }
+    });
+
+
+  }
+
+
+
+
   filtersChanged(): void { /* TODO: student implementira filtere i povratak na prvu stranicu. */
 
 
@@ -112,6 +155,7 @@ export class ProductOffersComponent
     this.loadPagedData();
 
   }
+
 
 
 }
