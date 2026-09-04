@@ -49,11 +49,11 @@ export class ProductOffersApiService {
   //   return this.http.put<void>(`${this.baseUrl}/${id}`, payload);
   // }
   //
-  // /**
-  //  * DELETE /Products/{id}
-  //  * Delete a product.
-  //  */
-  // delete(id: number): Observable<void> {
-  //   return this.http.delete<void>(`${this.baseUrl}/${id}`);
-  // }
+  /**
+   * DELETE /ProductOffers/{id}
+   * Delete a product offer.
+   */
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
 }
