@@ -15,6 +15,7 @@ public class GetProductOfferByIdQueryHandler(IAppDbContext context) : IRequestHa
             {
                 Id = x.Id,
                 Code = x.Code,
+                ProductId = x.ProductId,
                 ProductName = x.Product!.Name,
                 ProductPrice = x.Product.Price,
                 DiscountPercent = x.DiscountPercent,

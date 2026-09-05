@@ -44,10 +44,18 @@ export interface CreateProductOfferCommand {
   validUntilUtc: Date;
 }
 
+export interface UpdateProductOfferCommand {
+  code: string;
+  productId: number;
+  discountPercent: number;
+  validUntilUtc: Date;
+  isEnabled: boolean;
+}
 
 export interface GetProductOfferByIdQueryDto {
   id: number;
   code: string;
+  productId: number;
   productName: string;
   productPrice: number;
   discountPercent: number;

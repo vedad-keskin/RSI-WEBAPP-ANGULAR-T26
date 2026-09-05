@@ -4,6 +4,7 @@ public class GetProductOfferByIdQueryDto
 {
     public required int Id { get; init; }
     public required string Code { get; set; }
+    public required int ProductId { get; set; }
     public required string ProductName { get; set; }
     public required decimal ProductPrice { get; set; }
     public required decimal DiscountPercent { get; set; }
