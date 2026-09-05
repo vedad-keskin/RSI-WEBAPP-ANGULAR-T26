@@ -3,7 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { buildHttpParams } from '../../core/models/build-http-params';
-import {ListProductOffersRequest, ListProductOffersResponse} from './product-offers-api.models';
+import {
+  CreateProductOfferCommand,
+  GetProductOfferByIdQueryDto,
+  ListProductOffersRequest,
+  ListProductOffersResponse
+} from './product-offers-api.models';
 
 @Injectable({
   providedIn: 'root'
@@ -28,18 +33,18 @@ export class ProductOffersApiService {
    * GET /Products/{id}
    * Get a single product by ID.
    */
-  // getById(id: number): Observable<GetProductByIdQueryDto> {
-  //   return this.http.get<GetProductByIdQueryDto>(`${this.baseUrl}/${id}`);
-  // }
+  getById(id: number): Observable<GetProductOfferByIdQueryDto> {
+    return this.http.get<GetProductOfferByIdQueryDto>(`${this.baseUrl}/${id}`);
+  }
   //
   // /**
   //  * POST /Products
   //  * Create a new product.
   //  * @returns ID of the newly created product
   //  */
-  // create(payload: CreateProductCommand): Observable<number> {
-  //   return this.http.post<number>(this.baseUrl, payload);
-  // }
+  create(payload: CreateProductOfferCommand): Observable<number> {
+    return this.http.post<number>(this.baseUrl, payload);
+  }
   //
   // /**
   //  * PUT /Products/{id}

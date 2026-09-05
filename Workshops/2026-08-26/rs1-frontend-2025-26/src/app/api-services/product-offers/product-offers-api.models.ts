@@ -36,3 +36,24 @@ export interface ListProductOffersQueryDto {
 }
 
 export type ListProductOffersResponse = PageResult<ListProductOffersQueryDto>;
+
+export interface CreateProductOfferCommand {
+  code: string;
+  productId: number;
+  discountPercent: number;
+  validUntilUtc: Date;
+}
+
+
+export interface GetProductOfferByIdQueryDto {
+  id: number;
+  code: string;
+  productName: string;
+  productPrice: number;
+  discountPercent: number;
+  discountPrice: number;
+  validUntilUtc: string;
+  isEnabled: boolean;
+  status: ProductOfferStateType;
+  statusLabel: string;
+}
