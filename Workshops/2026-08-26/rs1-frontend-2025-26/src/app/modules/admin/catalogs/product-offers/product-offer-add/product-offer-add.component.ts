@@ -118,11 +118,11 @@ export class ProductOfferAddComponent extends BaseComponent implements OnInit{
       },
       error: (err) => {
 
-        this.toaster.error(getErrorMessage(err) || 'Neuspješno brisanje');
+        this.toaster.error(getErrorMessage(err) || 'Neuspješno dodavanje');
 
 
         this.stopLoading('Something went wrong. Please try again.');
-        console.error('Login error:', err);
+        console.error('Add error:', err);
       },
     });
 

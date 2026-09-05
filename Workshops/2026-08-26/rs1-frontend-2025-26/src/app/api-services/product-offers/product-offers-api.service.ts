@@ -7,8 +7,9 @@ import {
   CreateProductOfferCommand,
   GetProductOfferByIdQueryDto,
   ListProductOffersRequest,
-  ListProductOffersResponse
+  ListProductOffersResponse, UpdateProductOfferCommand
 } from './product-offers-api.models';
+import {UpdateProductCommand} from '../products/products-api.models';
 
 @Injectable({
   providedIn: 'root'
@@ -50,9 +51,9 @@ export class ProductOffersApiService {
   //  * PUT /Products/{id}
   //  * Update an existing product.
   //  */
-  // update(id: number, payload: UpdateProductCommand): Observable<void> {
-  //   return this.http.put<void>(`${this.baseUrl}/${id}`, payload);
-  // }
+  update(id: number, payload: UpdateProductOfferCommand): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/${id}`, payload);
+  }
   //
   /**
    * DELETE /Products/{id}

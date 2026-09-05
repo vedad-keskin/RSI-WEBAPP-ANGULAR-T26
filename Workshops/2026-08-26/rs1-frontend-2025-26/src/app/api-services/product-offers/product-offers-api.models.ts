@@ -56,4 +56,13 @@ export interface GetProductOfferByIdQueryDto {
   isEnabled: boolean;
   status: ProductOfferStateType;
   statusLabel: string;
+  productId: number;
+}
+
+export interface UpdateProductOfferCommand {
+  code: string;
+  productId: number;
+  discountPercent: number;
+  validUntilUtc: string;
+  isEnabled: boolean;
 }

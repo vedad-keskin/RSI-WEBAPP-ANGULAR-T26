@@ -23,6 +23,7 @@ public class GetProductOfferByIdQueryHandler(IAppDbContext context) : IRequestHa
                 IsEnabled = x.IsEnabled,
                 Status = !x.IsEnabled ? ProductOfferStateType.Iskljucena : x.ValidUntilUtc >= today ? ProductOfferStateType.Aktivna : ProductOfferStateType.Istekla,
                 StatusLabel = !x.IsEnabled ? "Iskljucena" : x.ValidUntilUtc >= today ? "Aktivna" : "Istekla",
+                ProductId = x.ProductId
             })
             .FirstOrDefaultAsync(cancellationToken);
 

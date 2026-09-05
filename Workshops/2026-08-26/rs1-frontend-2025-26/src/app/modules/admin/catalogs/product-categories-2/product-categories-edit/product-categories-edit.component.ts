@@ -21,6 +21,9 @@ export class ProductCategoriesEditComponent extends BaseComponent implements OnI
   private productCategoryId: number=0;
   private apiService = inject(ProductCategoriesApiService);
   public productCategoryDto: GetProductCategoryByIdQueryDto| null = null;
+
+
+
   private formBuilder =  inject(FormBuilder);
   public form: FormGroup = this.formBuilder.group({
     id: [0, [Validators.required]],
