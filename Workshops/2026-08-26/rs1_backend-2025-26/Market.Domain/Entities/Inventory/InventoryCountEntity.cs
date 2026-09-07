@@ -1,4 +1,5 @@
 using Market.Domain.Common;
+using Market.Domain.Entities.Sales;
 
 namespace Market.Domain.Entities.Inventory;
 
@@ -11,6 +12,8 @@ public class InventoryCountEntity : BaseEntity
     public int ItemsCount { get; set; }
 
     public decimal TotalDifferenceValue { get; set; }
+
+    public IReadOnlyCollection<InventoryCountItemEntity> Items { get; set; } = new List<InventoryCountItemEntity>();
 
     public static class Constraints
     {
