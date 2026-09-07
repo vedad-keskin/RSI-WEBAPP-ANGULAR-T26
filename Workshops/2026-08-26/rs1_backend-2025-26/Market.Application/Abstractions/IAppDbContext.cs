@@ -17,6 +17,7 @@ public interface IAppDbContext
     DbSet<OrderItemEntity> OrderItems { get; }
 
     DbSet<InventoryCountEntity> InventoryCounts { get; }
+    DbSet<InventoryCountItemEntity> InventoryCountItems { get; }
 
     Task<int> SaveChangesAsync(CancellationToken ct);
 }

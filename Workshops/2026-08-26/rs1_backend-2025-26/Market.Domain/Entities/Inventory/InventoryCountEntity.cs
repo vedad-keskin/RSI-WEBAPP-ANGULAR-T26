@@ -12,6 +12,8 @@ public class InventoryCountEntity : BaseEntity
 
     public decimal TotalDifferenceValue { get; set; }
 
+    public IReadOnlyCollection<InventoryCountItemEntity> Items { get; set; } = new List<InventoryCountItemEntity>();
+
     public static class Constraints
     {
         public const int CountNumberMaxLength = 20;

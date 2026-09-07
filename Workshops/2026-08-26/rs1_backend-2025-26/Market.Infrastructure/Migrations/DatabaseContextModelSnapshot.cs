@@ -379,6 +379,55 @@ namespace Market.Infrastructure.Migrations
                     b.ToTable("InventoryCounts", (string)null);
                 });
 
+            modelBuilder.Entity("Market.Domain.Entities.Inventory.InventoryCountItemEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CountedQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Difference")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("DifferenceValue")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("InventoryCountId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SystemQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InventoryCountId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("InventoryCountItems", (string)null);
+                });
+
             modelBuilder.Entity("Market.Domain.Entities.Sales.OrderEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -546,6 +595,25 @@ namespace Market.Infrastructure.Migrations
                     b.Navigation("MarketUser");
                 });
 
+            modelBuilder.Entity("Market.Domain.Entities.Inventory.InventoryCountItemEntity", b =>
+                {
+                    b.HasOne("Market.Domain.Entities.Inventory.InventoryCountEntity", "InventoryCount")
+                        .WithMany("Items")
+                        .HasForeignKey("InventoryCountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Market.Domain.Entities.Catalog.ProductEntity", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("InventoryCount");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Market.Domain.Entities.Sales.OrderItemEntity", b =>
                 {
                     b.HasOne("Market.Domain.Entities.Sales.OrderEntity", "Order")
@@ -580,6 +648,11 @@ namespace Market.Infrastructure.Migrations
                     b.Navigation("FavoriteProducts");
 
                     b.Navigation("RefreshTokens");
+                });
+
+            modelBuilder.Entity("Market.Domain.Entities.Inventory.InventoryCountEntity", b =>
+                {
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("Market.Domain.Entities.Sales.OrderEntity", b =>

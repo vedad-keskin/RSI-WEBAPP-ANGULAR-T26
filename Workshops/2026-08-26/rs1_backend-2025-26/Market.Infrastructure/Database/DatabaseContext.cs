@@ -17,6 +17,7 @@ public partial class DatabaseContext : DbContext, IAppDbContext
     public DbSet<OrderItemEntity> OrderItems => Set<OrderItemEntity>();
 
     public DbSet<InventoryCountEntity> InventoryCounts => Set<InventoryCountEntity>();
+    public DbSet<InventoryCountItemEntity> InventoryCountItems => Set<InventoryCountItemEntity>();
 
     private readonly TimeProvider _clock;
     public DatabaseContext(DbContextOptions<DatabaseContext> options, TimeProvider clock) : base(options)
