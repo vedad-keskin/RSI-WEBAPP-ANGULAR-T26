@@ -11,6 +11,10 @@ import {largePaging} from '../../../../../core/models/paging/paging-utils';
 import {ToasterService} from '../../../../../core/services/toaster.service';
 import {CreateProductCommand, GetProductByIdQueryDto} from '../../../../../api-services/products/products-api.models';
 import {BaseFormComponent} from '../../../../../core/components/base-classes/base-form-component';
+import {LoginCommand} from '../../../../../api-services/auth/auth-api.model';
+import {BaseComponent} from '../../../../../core/components/base-classes/base-component';
+import {CreateInventoryCountCommand} from '../../../../../api-services/inventory-counts/inventory-counts-api.models';
+import {getErrorMessage} from '../../../../../core/interceptors/error-logging-interceptor.service';
 
 @Component({
   selector: 'app-inventory-count-add',
@@ -21,6 +25,7 @@ import {BaseFormComponent} from '../../../../../core/components/base-classes/bas
 
 
 export class InventoryCountAddComponent
+  extends BaseComponent
   implements OnInit {
 
 
@@ -38,11 +43,12 @@ export class InventoryCountAddComponent
 
   readonly form =
     this.fb.group({
-      countNumber: ['' ,
+      countNumber: ['' ,[
         Validators.required,
         Validators.minLength(5),
         Validators.maxLength(20),
         Validators.pattern(/^INV-/)
+        ]
       ],
       note: ['' ,
         [Validators.maxLength(500)]
@@ -53,6 +59,7 @@ export class InventoryCountAddComponent
 
 
   constructor() {
+    super();
     this.addItem();
   }
 
@@ -82,8 +89,8 @@ export class InventoryCountAddComponent
   addItem(): void {
     this.items.push(
       this.fb.group({
-        productId: [null as number | null],
-        countedQuantity: [null as number | null]
+        productId: [null as number | null , [Validators.required , Validators.min(1) ]],
+        countedQuantity: [null as number | null ,  [Validators.required , Validators.min(0), Validators.max(100000) ]],
       }));
   }
 
@@ -103,6 +110,39 @@ export class InventoryCountAddComponent
 
   save(): void { /* TODO: student implementira povezivanje, validaciju, racun i POST. */
 
+
+    if (this.form.invalid || this.isLoading) return;
+
+    this.startLoading();
+
+    const payload: CreateInventoryCountCommand = {
+      countNumber: this.form.value.countNumber ?? '',
+      note: this.form.value.note,
+      items: this.form.value.items,
+    };
+
+    this.api.create(payload).subscribe({
+      next: () => {
+
+
+        this.stopLoading();
+
+
+        this.router.navigate(['/admin/inventory-counts']);
+
+        this.toaster.success('Inventura uspješno dodana');
+
+
+      },
+      error: (err) => {
+
+        this.toaster.error(getErrorMessage(err));
+
+
+        this.stopLoading('Something went wrong. Please try again.');
+        console.error('Adding error:', err);
+      },
+    });
 
 
 
