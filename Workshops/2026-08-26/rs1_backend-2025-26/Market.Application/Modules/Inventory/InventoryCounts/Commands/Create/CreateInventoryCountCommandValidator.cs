@@ -39,6 +39,6 @@ public sealed class CreateInventoryCountCommandItemValidator : AbstractValidator
             .GreaterThan(0).WithMessage("ProductId must be greater than 0.");
 
         RuleFor(x => x.CountedQuantity)
-            .InclusiveBetween(0, 100000).WithMessage("Counted quantity must be between 1 and 100000.");
+            .InclusiveBetween(0, 100000).WithMessage("Counted quantity must be between 0 and 100000.");
     }
 }

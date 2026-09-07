@@ -149,4 +149,85 @@ export class InventoryCountAddComponent
   }
 
 
+  getStock(item: FormGroup) {
+
+    const productId = item.value.productId;
+
+    if(!productId){
+      return null;
+    }
+
+    const stock = this.products.find((x:any) => x.id === productId)?.stockQuantity ?? null;
+
+    return stock;
+  }
+
+  getPrice(item: FormGroup) {
+
+
+    const productId = item.value.productId;
+
+    if(!productId){
+      return null;
+    }
+
+    const price = this.products.find((x:any) => x.id === productId)?.price ?? null;
+
+    return price;
+
+
+  }
+
+  getDifference(item: FormGroup) {
+
+    const stock = this.getStock(item);
+
+    const counted = item.value.countedQuantity;
+
+    if(stock == null || counted == null){
+
+      return null;
+
+    }
+
+    return counted - stock;
+
+  }
+
+  getVrijednost(item: FormGroup) {
+
+  const difference = this.getDifference(item);
+  const price = this.getPrice(item);
+
+  if(!difference || !price){
+
+    return null;
+  }
+
+  return difference * price;
+
+
+
+
+  }
+
+  getTotal() {
+
+    let total = 0;
+
+    for (const item of this.items.controls) {
+
+      const itemDifferenceValue = this.getVrijednost(item);
+
+      if(itemDifferenceValue == null){
+        return null;
+      }
+
+      total += itemDifferenceValue;
+
+    }
+
+    return total;
+
+  }
 }
