@@ -4,9 +4,11 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { buildHttpParams } from '../../core/models/build-http-params';
 import {
+  CreateInventoryCountCommand,
   ListInventoryCountsRequest,
   ListInventoryCountsResponse,
 } from './inventory-counts-api.models';
+import {CreateOrderCommand} from '../orders/orders-api.models';
 
 @Injectable({ providedIn: 'root' })
 export class InventoryCountsApiService {
@@ -18,4 +20,13 @@ export class InventoryCountsApiService {
       params: buildHttpParams(request as any),
     });
   }
+
+  create(payload: CreateInventoryCountCommand): Observable<number> {
+    return this.http.post<number>(this.baseUrl, payload);
+  }
+
+
+
+
+
 }

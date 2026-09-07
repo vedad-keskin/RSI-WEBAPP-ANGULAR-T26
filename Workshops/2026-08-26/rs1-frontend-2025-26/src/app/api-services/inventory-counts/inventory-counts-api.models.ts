@@ -13,3 +13,21 @@ export interface ListInventoryCountsQueryDto {
 }
 
 export type ListInventoryCountsResponse = PageResult<ListInventoryCountsQueryDto>;
+
+
+export interface CreateInventoryCountCommand {
+  note?: string | null;
+  countNumber: string;
+  items?: CreateInventoryCountCommandItem[];
+}
+
+export interface CreateInventoryCountCommandItem {
+  productId: number;
+  countedQuantity: number;
+}
+
+/**
+ * Command for POST /Orders
+ * Corresponds to: CreateOrderCommand.cs
+ */
+
