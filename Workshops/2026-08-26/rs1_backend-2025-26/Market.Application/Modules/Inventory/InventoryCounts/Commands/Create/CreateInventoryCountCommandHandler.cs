@@ -1,4 +1,5 @@
 ﻿using Market.Application.Modules.Sales.Orders.Commands.Create;
+using Market.Domain.Entities.Inventory;
 using Market.Domain.Entities.Sales;
 
 namespace Market.Application.Modules.Inventory.InventoryCounts.Commands.Create;
@@ -8,36 +9,62 @@ public class CreateInventoryCountCommandHandler(IAppDbContext ctx, IAppCurrentUs
 {
     public async Task<int> Handle(CreateInventoryCountCommand request, CancellationToken ct)
     {
-        #region Create order and set basic properties
-        var order = new OrderEntity
-        {
-            ReferenceNumber = Guid.NewGuid().ToString().Substring(0, 5).ToUpper(),
-            MarketUserId = currentUser.UserId!.Value,
-            OrderedAtUtc = DateTime.UtcNow,
-            Status = OrderStatusType.Draft,
-            TotalAmount = 0m, //
-            Note = request.Note
-        };
-        ctx.Orders.Add(order);
-        #endregion
 
-        #region Load products from database and prepare a map
+
+        var countNumber = request.CountNumber.Trim();
+
+        var note = string.IsNullOrWhiteSpace(request.Note) ? null : request.Note.Trim();
+
+        bool exists = await ctx.InventoryCounts
+            .AnyAsync(x => x.CountNumber.ToLower() == countNumber.ToLower(), ct);
+
+        if (exists)
+        {
+            throw new MarketConflictException("Count number already exists.");
+        }
+
+
+
+
+
+        var parent = new InventoryCountEntity
+        {
+            Note = request.Note,
+            CountNumber = countNumber,
+            ItemsCount = request.Items.Count,
+            TotalDifferenceValue = 0m,
+            CreatedAtUtc = DateTime.UtcNow.Date,
+
+        };
+        ctx.InventoryCounts.Add(parent);
+
+
+
 
         // pokupiti sve id-ove proizvoda koji se naručuju
         List<int> productIds = request.Items.Select(ri => ri.ProductId).ToList(); // ne treba hashset jer filter se radi u bazi
 
         List<ProductEntity> products = await ctx.Products
             .Where(p => productIds.Contains(p.Id)) //<-- dorada nakon nastave za poboljsanje performansi: filtrirati samo proizvode koji su u request.Items
-            .AsNoTracking()
+            //.AsNoTracking()
             .ToListAsync(ct);
 
         Dictionary<int, ProductEntity> productsMap = products.ToDictionary(x => x.Id);
-        #endregion
 
-        #region Create order items and calculate totals
 
-        // za demo svrhe, svi proizvodi imaju 5% popusta
-        decimal discountPercent = 0.05m;
+        bool existsShortage = request.Items
+            .Any(x => x.CountedQuantity < productsMap[x.ProductId].StockQuantity);
+
+        if (existsShortage && note is null)
+        {
+
+            throw new MarketConflictException("Note is required if there is a shortage.");
+
+        }
+
+
+        decimal totalDifferenceValue = 0m;
+
 
         foreach (var item in request.Items)
         {
@@ -53,30 +80,45 @@ public class CreateInventoryCountCommandHandler(IAppDbContext ctx, IAppCurrentUs
                 throw new ValidationException($"Product {product.Name} is disabled.");
             }
 
-            decimal subtotal = RoundMoney(product.Price * item.Quantity);
-            decimal discountAmount = RoundMoney(subtotal * discountPercent);
-            decimal total = RoundMoney(subtotal - discountAmount);
 
-            var orderItem = new OrderItemEntity
+            var systemQuantity = product.StockQuantity;
+            var countedQuantity = item.CountedQuantity;
+
+            var difference = countedQuantity - systemQuantity;
+            var unitPrice = product.Price;
+            //var differenceValue = Math.Round(difference * unitPrice, 2, MidpointRounding.AwayFromZero);
+
+            var differenceValue = RoundMoney(difference * unitPrice);
+
+
+            var childItem = new InventoryCountItemEntity
             {
-                Order = order,
+                InventoryCount = parent,
                 ProductId = item.ProductId,
-                Quantity = item.Quantity,
-                UnitPrice = product.Price,
-                Subtotal = subtotal,
-                DiscountPercent = discountPercent,
-                DiscountAmount = discountAmount,
-                Total = total
+                SystemQuantity = systemQuantity,
+                CountedQuantity = countedQuantity,
+                UnitPrice = unitPrice,
+                Difference = difference,
+                DifferenceValue = differenceValue,
             };
 
-            ctx.OrderItems.Add(orderItem);
-            order.TotalAmount += RoundMoney(orderItem.Total);
+            ctx.InventoryCountItems.Add(childItem);
+
+
+            totalDifferenceValue += differenceValue;
+
+            product.StockQuantity = countedQuantity;
+
+            //order.TotalAmount += RoundMoney(orderItem.Total);
         }
-        #endregion
+
+        parent.TotalDifferenceValue = totalDifferenceValue;
+
+
 
         await ctx.SaveChangesAsync(ct);
 
-        return order.Id;
+        return parent.Id;
     }
 
     private static decimal RoundMoney(decimal value)

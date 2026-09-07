@@ -6,7 +6,7 @@ public sealed class CreateInventoryCountCommandValidator : AbstractValidator<Cre
 {
     public CreateInventoryCountCommandValidator()
     {
-        RuleFor(x => x.Note)
+        RuleFor(x => x.CountNumber)
             .NotEmpty().WithMessage("Count number is required.")
             .Must(x => x.Trim().Length >= 5 && x.Trim().Length <= 20)
             .WithMessage("Count number must be between 5 and 20 characters.")
@@ -39,6 +39,6 @@ public sealed class CreateInventoryCountCommandItemValidator : AbstractValidator
             .GreaterThan(0).WithMessage("ProductId must be greater than 0.");
 
         RuleFor(x => x.CountedQuantity)
-            .InclusiveBetween(1, 100000).WithMessage("Counted quantity must be between 1 and 100000.");
+            .InclusiveBetween(0, 100000).WithMessage("Counted quantity must be between 1 and 100000.");
     }
 }
