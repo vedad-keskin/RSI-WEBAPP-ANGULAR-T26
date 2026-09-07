@@ -13,3 +13,14 @@ export interface ListInventoryCountsQueryDto {
 }
 
 export type ListInventoryCountsResponse = PageResult<ListInventoryCountsQueryDto>;
+
+export interface CreateInventoryCountCommandItem {
+  productId: number;
+  countedQuantity: number;
+}
+
+export interface CreateInventoryCountCommand {
+  countNumber: string;
+  note?: string | null;
+  items: CreateInventoryCountCommandItem[];
+}

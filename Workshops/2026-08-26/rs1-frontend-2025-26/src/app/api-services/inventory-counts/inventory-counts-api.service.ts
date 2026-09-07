@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { buildHttpParams } from '../../core/models/build-http-params';
 import {
+  CreateInventoryCountCommand,
   ListInventoryCountsRequest,
   ListInventoryCountsResponse,
 } from './inventory-counts-api.models';
@@ -17,5 +18,9 @@ export class InventoryCountsApiService {
     return this.http.get<ListInventoryCountsResponse>(this.baseUrl, {
       params: buildHttpParams(request as any),
     });
+  }
+
+  create(payload: CreateInventoryCountCommand): Observable<number> {
+    return this.http.post<number>(this.baseUrl, payload);
   }
 }
